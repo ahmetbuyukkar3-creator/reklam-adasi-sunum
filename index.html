@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Reklam Adası · Dijital Büyüme Planı</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060608;--text:#f7f7f8;--muted:#a1a1aa;--faint:#71717a;
+  --line:rgba(255,255,255,0.09);--line-s:rgba(255,255,255,0.18);
+  --panel:rgba(16,16,22,0.62);
+  /* logo renkleri */
+  --r:#ff3b4e;--y:#ffd23f;--g:#2bd97c;--b:#3b82ff;--o:#ff8a1f;--p:#ff3fa4;--c:#22d3ee;
+  --led:#ffb547;
+  --ease:cubic-bezier(0.16,1,0.3,1);--pop:cubic-bezier(0.34,1.56,0.64,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--text);overflow:hidden;font-family:'Outfit',sans-serif;-webkit-font-smoothing:antialiased;}
+.serif{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;letter-spacing:0;}
+
+/* ---------- deck ---------- */
+.deck{position:fixed;inset:0;}
+.slide{position:absolute;inset:0;display:flex;align-items:center;padding:90px 7vw 110px;
+  opacity:0;pointer-events:none;transition:opacity .8s var(--ease);overflow:hidden;}
+.slide.active{opacity:1;pointer-events:auto;}
+.slide.center{justify-content:center;text-align:center;}
+.inner{position:relative;z-index:3;width:100%;max-width:1380px;margin:0 auto;}
+
+/* tam ekran arka plan medyası */
+.bg{position:absolute;inset:0;z-index:0;overflow:hidden;}
+.bg img,.bg video{width:100%;height:100%;object-fit:cover;transform:scale(1.12);transition:transform 9s linear;}
+.slide.active .bg img,.slide.active .bg video{transform:scale(1.0);}
+.shade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(6,6,8,0.96) 0%,rgba(6,6,8,0.82) 38%,rgba(6,6,8,0.35) 75%,rgba(6,6,8,0.55) 100%);}
+.shade.full{background:radial-gradient(ellipse at center,rgba(6,6,8,0.55) 0%,rgba(6,6,8,0.92) 70%);}
+.shade.bottom{background:linear-gradient(0deg,rgba(6,6,8,0.97) 8%,rgba(6,6,8,0.55) 55%,rgba(6,6,8,0.75) 100%);}
+.grain{position:fixed;inset:0;z-index:40;pointer-events:none;opacity:.06;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* reveal sistemi (sunum-deck) */
+[data-r]{opacity:0;transform:translateY(30px);transition:opacity .8s var(--ease),transform .9s var(--ease);}
+[data-r].in{opacity:1;transform:none;}
+[data-r="pop"]{transform:scale(0.6);transition:opacity .5s ease,transform .7s var(--pop);}
+[data-r="pop"].in{transform:scale(1);}
+[data-r="left"]{transform:translateX(-40px);} [data-r="left"].in{transform:none;}
+[data-r="right"]{transform:translateX(40px);} [data-r="right"].in{transform:none;}
+[data-r="fade"]{transform:none;}
+
+/* ---------- tipografi ---------- */
+.kicker{display:inline-flex;align-items:center;gap:12px;font-size:.78rem;letter-spacing:.34em;text-transform:uppercase;font-weight:700;color:var(--k,var(--led));margin-bottom:26px;}
+.kicker::before{content:"";width:34px;height:2px;background:var(--k,var(--led));box-shadow:0 0 12px var(--k,var(--led));}
+.slide.center .logo{margin:0 auto;}
+.slide.center .kicker::after{content:"";width:34px;height:2px;background:var(--k,var(--led));box-shadow:0 0 12px var(--k,var(--led));}
+h1{font-size:clamp(2.6rem,6.4vw,6rem);font-weight:800;line-height:.98;letter-spacing:-.035em;}
+h2{font-size:clamp(2rem,4.4vw,4.1rem);font-weight:800;line-height:1.02;letter-spacing:-.03em;}
+h1 .serif,h2 .serif{font-size:1.12em;letter-spacing:-.01em;}
+.lead{font-size:clamp(1.05rem,1.55vw,1.4rem);color:var(--muted);line-height:1.55;max-width:640px;margin-top:26px;font-weight:300;}
+.lead b{color:var(--text);font-weight:600;}
+.glow{color:var(--k,var(--led));text-shadow:0 0 28px color-mix(in srgb,var(--k,var(--led)) 55%,transparent);}
+
+/* ---------- logo (videodaki çok renkli harfler) ---------- */
+.logo{display:flex;width:fit-content;flex-direction:column;line-height:.86;font-weight:900;letter-spacing:-.02em;}
+.logo .row{display:flex;}
+.logo span{display:inline-block;text-shadow:0 0 18px currentColor,0 0 60px color-mix(in srgb,currentColor 45%,transparent);animation:flick 6s infinite;}
+.logo .row:nth-child(2){padding-left:.9em;}
+.logo span:nth-child(odd){animation-delay:-1.3s;} .logo span:nth-child(3n){animation-delay:-3.1s;}
+@keyframes flick{0%,92%,100%{opacity:1}93%{opacity:.55}95%{opacity:1}97%{opacity:.75}}
+.L1{color:var(--r)}.L2{color:var(--y)}.L3{color:var(--g)}.L4{color:var(--b)}.L5{color:var(--o)}.L6{color:var(--p)}.L7{color:var(--c)}
+
+
+/* ---------- iş birliği girişi ---------- */
+.collab{background:#071a1f;}
+.collab .photo{position:absolute;right:0;top:0;bottom:0;width:58%;z-index:0;overflow:hidden;}
+.collab .photo img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;transform:scale(1.08);transition:transform 9s linear;}
+.collab.active .photo img{transform:scale(1);}
+.collab .photo::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#071a1f 0%,rgba(7,26,31,.75) 22%,rgba(7,26,31,0) 55%),linear-gradient(0deg,rgba(7,26,31,.8),transparent 35%);}
+.collab .x{display:flex;align-items:center;gap:clamp(14px,2vw,30px);flex-wrap:wrap;margin-top:6px;}
+.collab .hai{font-size:clamp(2.6rem,5.6vw,5.4rem);font-weight:900;letter-spacing:-.03em;line-height:1;}
+.collab .hai em{font-style:normal;background:linear-gradient(135deg,#7ff3ff,#22d3ee 50%,#3b82ff);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;}
+.collab .times{font-size:clamp(1.6rem,3vw,2.8rem);font-weight:300;color:var(--muted);}
+.collab .logo{font-size:clamp(2.2rem,4.6vw,4.4rem);}
+.collab .handle{display:inline-flex;align-items:center;gap:10px;margin-top:40px;padding:10px 18px;border-radius:100px;border:1px solid rgba(34,211,238,.35);background:rgba(34,211,238,.08);color:#a5f3fc;font-weight:600;font-size:.95rem;}
+.collab .handle i{width:8px;height:8px;border-radius:50%;background:var(--c);box-shadow:0 0 12px var(--c);}
+@media(max-width:900px){.collab .photo{width:100%;opacity:.45;}}
+
+/* ---------- 0 kapak ---------- */
+.cover .logo{font-size:clamp(4rem,11vw,10.5rem);}
+.cover-meta{display:flex;gap:28px;flex-wrap:wrap;margin-top:44px;font-size:.85rem;color:var(--faint);letter-spacing:.18em;text-transform:uppercase;font-weight:600;}
+.cover-meta b{color:var(--text);font-weight:600;}
+.cover .tag{font-size:clamp(1.3rem,2.3vw,2.1rem);font-weight:300;margin-top:34px;max-width:760px;line-height:1.35;}
+.cover .tag .serif{color:var(--led);font-size:1.15em;}
+
+/* ---------- 1 portföy mozaiği ---------- */
+.mosaic{display:grid;grid-template-columns:1.25fr 1fr 1fr .8fr;grid-template-rows:1fr 1fr;gap:12px;height:min(58vh,560px);margin-top:38px;}
+.tile{position:relative;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#111;}
+.tile img,.tile video{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease);}
+.tile:hover img,.tile:hover video{transform:scale(1.06);}
+.tile .cap{position:absolute;left:0;right:0;bottom:0;padding:34px 16px 13px;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);font-size:.82rem;font-weight:600;}
+.tile .cap small{display:block;color:var(--muted);font-weight:400;font-size:.72rem;letter-spacing:.06em;margin-top:2px;}
+.t1{grid-row:span 2;} .t4{grid-row:span 2;}
+
+/* ---------- 2 bugün ---------- */
+.status{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:46px;max-width:1100px;}
+.st{background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:18px;padding:22px 18px;}
+.st .n{font-size:.78rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600;}
+.st .v{font-size:1.5rem;font-weight:800;margin-top:10px;display:flex;align-items:center;gap:10px;}
+.st .dot{width:10px;height:10px;border-radius:50%;background:var(--r);box-shadow:0 0 14px var(--r);}
+.st.warn .dot{background:var(--y);box-shadow:0 0 14px var(--y);}
+.quote{margin-top:44px;font-size:clamp(1.3rem,2.4vw,2.2rem);font-weight:300;max-width:980px;line-height:1.35;}
+.quote b{font-weight:700;}
+
+/* ---------- 3 merkez (hub) ---------- */
+.hub-wrap{display:grid;grid-template-columns:.9fr 1.3fr;gap:5vw;align-items:center;}
+.hub{position:relative;width:100%;aspect-ratio:1/1;max-width:600px;margin:0 auto;}
+.hub>svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+.hub .flow{filter:drop-shadow(0 0 6px currentColor);stroke-dasharray:6 10;animation:dash 1.2s linear infinite;}
+@keyframes dash{to{stroke-dashoffset:-32;}}
+.core{position:absolute;left:50%;top:50%;width:34%;aspect-ratio:1/1;translate:-50% -50%;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#2a2a33,#0c0c10 70%);border:1px solid var(--line-s);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  box-shadow:0 0 0 10px rgba(255,210,63,.04),0 0 80px -10px rgba(255,210,63,.45);}
+.core b{font-size:clamp(.9rem,1.5vw,1.3rem);font-weight:800;}
+.core small{font-size:.72rem;color:var(--muted);margin-top:4px;letter-spacing:.06em;}
+.core .ring{position:absolute;inset:-14px;border-radius:50%;border:1px dashed rgba(255,210,63,.35);animation:spin 30s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.node{position:absolute;translate:-50% -29px;width:30%;text-align:center;}
+.node .ic{width:58px;height:58px;margin:0 auto 9px;border-radius:16px;display:grid;place-items:center;background:var(--panel);border:1px solid color-mix(in srgb,var(--nc) 55%,transparent);box-shadow:0 0 30px -8px var(--nc);backdrop-filter:blur(10px);}
+.node .ic svg{width:28px;height:28px;}
+.node b{display:block;font-size:.95rem;font-weight:700;}
+.node small{display:block;font-size:.74rem;color:var(--muted);line-height:1.3;margin-top:3px;}
+.conv{display:flex;gap:10px;flex-wrap:wrap;margin-top:30px;}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:100px;background:var(--panel);border:1px solid var(--line-s);font-size:.9rem;font-weight:600;backdrop-filter:blur(10px);}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--cc,var(--g));box-shadow:0 0 10px var(--cc,var(--g));}
+
+/* ---------- ortak iki sütun ---------- */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:5vw;align-items:center;}
+.two>*,.hub-wrap>*{min-width:0;}
+.pts{list-style:none;margin-top:30px;display:flex;flex-direction:column;gap:14px;max-width:560px;}
+.pts li{display:flex;gap:14px;align-items:flex-start;font-size:1.05rem;color:#d4d4d8;line-height:1.45;}
+.pts li::before{content:"";flex:none;width:8px;height:8px;margin-top:9px;border-radius:2px;background:var(--k,var(--led));box-shadow:0 0 10px var(--k,var(--led));transform:rotate(45deg);}
+.pts b{color:#fff;font-weight:600;}
+
+/* google sonuç kartı */
+.gcard{background:#fff;color:#202124;border-radius:22px;padding:26px 28px;box-shadow:0 40px 90px -30px rgba(0,0,0,.8);font-family:Arial,sans-serif;max-width:560px;}
+.gbar{display:flex;align-items:center;gap:12px;border:1px solid #dfe1e5;border-radius:100px;padding:11px 18px;font-size:.98rem;box-shadow:0 1px 6px rgba(32,33,36,.18);}
+.gbar .typed{border-right:2px solid #1a73e8;padding-right:2px;white-space:nowrap;overflow:hidden;}
+.gres{margin-top:22px;padding-top:4px;}
+.gres .site{display:flex;align-items:center;gap:10px;font-size:.82rem;color:#4d5156;}
+.gres .fav{width:28px;height:28px;border-radius:50%;background:#111;display:grid;place-items:center;font-weight:900;font-size:.7rem;font-family:'Outfit';}
+.gres .t{font-size:1.2rem;color:#1a0dab;margin-top:6px;}
+.gres .d{font-size:.86rem;color:#4d5156;line-height:1.5;margin-top:5px;}
+.gsep{height:1px;background:#ececec;margin:16px 0;}
+.gres.dim{opacity:.45;}
+.ilce{display:flex;flex-wrap:wrap;gap:8px;margin-top:26px;max-width:600px;}
+.ilce span{font-size:.8rem;padding:7px 13px;border-radius:100px;border:1px solid rgba(43,217,124,.35);color:#bff5d6;background:rgba(43,217,124,.07);}
+.big-n{display:flex;align-items:baseline;gap:14px;margin-top:30px;}
+.big-n .num{font-size:clamp(3.4rem,6vw,5.6rem);font-weight:900;color:var(--g);text-shadow:0 0 40px rgba(43,217,124,.45);line-height:1;font-variant-numeric:tabular-nums;}
+.big-n .lbl{color:var(--muted);font-size:1rem;line-height:1.35;max-width:260px;}
+
+/* harita kartı */
+.map{position:relative;border-radius:24px;overflow:hidden;max-width:560px;border:1px solid var(--line-s);box-shadow:0 40px 90px -30px rgba(0,0,0,.9);
+  background:#1b1d22;aspect-ratio:1/1;}
+.map .grid{position:absolute;inset:0;background:
+  linear-gradient(115deg,transparent 47%,#2c2f37 47%,#2c2f37 50%,transparent 50%),
+  linear-gradient(25deg,transparent 60%,#2c2f37 60%,#2c2f37 62.5%,transparent 62.5%),
+  linear-gradient(170deg,transparent 30%,#262930 30%,#262930 31.5%,transparent 31.5%),
+  linear-gradient(80deg,transparent 72%,#262930 72%,#262930 73.5%,transparent 73.5%),
+  radial-gradient(circle at 70% 25%,#1f3a2a 0,#1f3a2a 60px,transparent 61px),#1b1d22;}
+.pin{position:absolute;transform:translate(-50%,-100%);}
+.pin.main{left:52%;top:46%;}
+.pin .p{width:44px;height:44px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--r);box-shadow:0 0 30px var(--r);display:grid;place-items:center;}
+.pin .p::after{content:"";width:14px;height:14px;border-radius:50%;background:#fff;}
+.pin.main::after{content:"";position:absolute;left:50%;bottom:-10px;width:70px;height:24px;transform:translateX(-50%);border-radius:50%;border:2px solid var(--r);opacity:.6;animation:pulse 2s infinite;}
+@keyframes pulse{from{transform:translateX(-50%) scale(.4);opacity:.9}to{transform:translateX(-50%) scale(1.6);opacity:0}}
+.pin.s .p{width:22px;height:22px;background:#5f6368;box-shadow:none;}
+.pin.s .p::after{width:7px;height:7px;}
+.mcard{position:absolute;left:18px;right:18px;bottom:18px;background:#fff;color:#202124;border-radius:18px;padding:18px 20px;font-family:Arial,sans-serif;}
+.mcard .nm{font-size:1.15rem;font-weight:700;}
+.mcard .rt{font-size:.82rem;color:#70757a;margin-top:4px;}
+.mcard .rt em{color:#e37400;font-style:normal;letter-spacing:1px;}
+.mcard .acts{display:flex;gap:8px;margin-top:14px;}
+.mcard .acts span{flex:1;text-align:center;font-size:.76rem;color:#1a73e8;border:1px solid #dadce0;border-radius:100px;padding:8px 4px;font-weight:600;}
+.mcard .acts span.pr{background:#1a73e8;color:#fff;border-color:#1a73e8;}
+.msearch{position:absolute;left:18px;right:18px;top:18px;background:#fff;color:#3c4043;border-radius:100px;padding:12px 18px;font-family:Arial,sans-serif;font-size:.92rem;box-shadow:0 2px 10px rgba(0,0,0,.4);}
+
+/* telefonlar (shorts) */
+.phones{display:flex;gap:18px;justify-content:center;align-items:center;}
+.phone{position:relative;width:min(15vw,230px);aspect-ratio:9/19;border-radius:34px;padding:9px;background:#0d0d10;border:1px solid #2a2a30;box-shadow:0 40px 80px -30px rgba(0,0,0,.9),inset 0 0 0 2px #1a1a1f;}
+.phone .scr{position:relative;width:100%;height:100%;border-radius:26px;overflow:hidden;background:#000;}
+.phone video{width:100%;height:100%;object-fit:cover;}
+.phone .ui{position:absolute;left:12px;right:46px;bottom:16px;font-size:.66rem;line-height:1.35;text-shadow:0 1px 4px #000;}
+.phone .ui b{display:block;font-size:.74rem;margin-bottom:3px;}
+.phone .ui .lnk{display:inline-block;margin-top:6px;padding:4px 8px;border-radius:6px;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);font-weight:600;}
+.phone .side{position:absolute;right:10px;bottom:70px;display:flex;flex-direction:column;gap:14px;align-items:center;font-size:.6rem;}
+.phone .side i{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.16);display:block;}
+.phone.mid{width:min(17.5vw,268px);}
+.phone.side-l{transform:rotate(-5deg) translateY(16px);} .phone.side-r{transform:rotate(5deg) translateY(16px);}
+.funnel{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:32px;}
+.funnel .f{padding:12px 16px;border-radius:12px;background:var(--panel);border:1px solid var(--line-s);font-weight:600;font-size:.92rem;backdrop-filter:blur(10px);}
+.funnel .f.end{border-color:var(--y);color:var(--y);box-shadow:0 0 24px -6px var(--y);}
+.funnel .ar{color:var(--faint);font-size:1.2rem;}
+
+/* linkedin kartı */
+.li{background:#fff;color:#191919;border-radius:16px;max-width:520px;overflow:hidden;font-family:-apple-system,Segoe UI,Arial,sans-serif;box-shadow:0 40px 90px -30px rgba(0,0,0,.9);}
+.li .hd{display:flex;gap:12px;align-items:center;padding:16px 18px 10px;}
+.li .av{width:48px;height:48px;border-radius:8px;background:#111;display:grid;place-items:center;font-family:'Outfit';font-weight:900;font-size:.8rem;}
+.li .hd b{font-size:.95rem;display:block;}
+.li .hd small{font-size:.75rem;color:#666;}
+.li .tx{padding:0 18px 12px;font-size:.88rem;line-height:1.5;}
+.li img{display:block;width:100%;aspect-ratio:16/9;object-fit:cover;}
+.li .ft{display:flex;justify-content:space-around;padding:10px;font-size:.8rem;color:#666;font-weight:600;border-top:1px solid #eee;}
+.targets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:28px;max-width:560px;}
+.targets div{padding:14px 16px;border-radius:14px;background:var(--panel);border:1px solid rgba(59,130,255,.3);font-weight:600;font-size:.95rem;backdrop-filter:blur(10px);}
+.targets small{display:block;color:var(--muted);font-weight:400;font-size:.78rem;margin-top:3px;}
+
+/* ---------- 8 claude hattı ---------- */
+.pipe{display:grid;grid-template-columns:300px 160px 1fr;gap:28px;align-items:center;margin-top:34px;}
+.tg{background:#17212b;border-radius:26px;padding:14px;border:1px solid #2b3946;box-shadow:0 30px 70px -25px rgba(0,0,0,.9);font-family:-apple-system,Segoe UI,Arial,sans-serif;}
+.tg .top{display:flex;align-items:center;gap:10px;padding:4px 6px 12px;border-bottom:1px solid #22303c;}
+.tg .top i{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--c),var(--b));display:block;}
+.tg .top b{font-size:.85rem;display:block;} .tg .top small{font-size:.7rem;color:#6d8394;}
+.tg .msg{margin:12px 0 0 auto;max-width:88%;background:#2b5278;border-radius:16px 16px 4px 16px;padding:6px;}
+.tg .msg img{display:block;width:100%;border-radius:12px;aspect-ratio:4/3;object-fit:cover;}
+.tg .msg p{font-size:.78rem;padding:7px 6px 3px;line-height:1.35;}
+.tg .msg p small{display:block;text-align:right;font-size:.62rem;color:#9fc2e2;margin-top:2px;}
+.tg .bot{margin-top:10px;max-width:88%;background:#182533;border-radius:16px 16px 16px 4px;padding:9px 11px;font-size:.76rem;line-height:1.4;color:#d7e3ee;}
+.tg .btns{display:flex;gap:6px;margin-top:8px;}
+.tg .btns span{flex:1;text-align:center;padding:8px;border-radius:9px;font-size:.74rem;font-weight:700;background:#2b5278;}
+.tg .btns span.ok{background:var(--g);color:#05210f;box-shadow:0 0 18px -2px var(--g);}
+.brain{position:relative;aspect-ratio:1/1;border-radius:50%;display:grid;place-items:center;text-align:center;
+  background:radial-gradient(circle,#2a1a12 0%,#0c0c10 70%);border:1px solid rgba(217,119,87,.5);box-shadow:0 0 70px -10px rgba(217,119,87,.7);}
+.brain svg{width:46px;height:46px;animation:spin 14s linear infinite;}
+.brain b{display:block;font-size:1.05rem;margin-top:4px;}
+.brain small{display:block;font-size:.66rem;color:var(--muted);}
+.brain::before,.brain::after{content:"";position:absolute;inset:-12px;border-radius:50%;border:1px solid rgba(217,119,87,.35);animation:pulse2 2.4s infinite;}
+.brain::after{animation-delay:1.2s;}
+@keyframes pulse2{from{transform:scale(.9);opacity:1}to{transform:scale(1.35);opacity:0}}
+.outs{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.out{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--oc);border-radius:14px;padding:13px 15px;backdrop-filter:blur(12px);}
+.out .h{display:flex;align-items:center;justify-content:space-between;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--oc);}
+.out .h em{font-style:normal;color:var(--g);letter-spacing:.04em;text-transform:none;font-size:.72rem;opacity:0;transition:opacity .4s;}
+.pipe.live .out .h em{opacity:1;}
+.out p{font-size:.84rem;line-height:1.45;color:#e4e4e7;margin-top:7px;}
+.out.wide{grid-column:span 2;}
+.typing{display:inline-flex;gap:4px;margin-left:6px;vertical-align:middle;}
+.typing i{width:5px;height:5px;border-radius:50%;background:#9fc2e2;animation:tp 1s infinite;}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes tp{0%,100%{opacity:.25}50%{opacity:1}}
+.claude-tag{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-size:.82rem;color:var(--muted);}
+.claude-tag b{color:#e8a68d;}
+
+/* ---------- 9 video + maskot ---------- */
+.layers{display:flex;flex-direction:column;gap:12px;margin-top:30px;max-width:560px;}
+.layer{display:flex;gap:16px;align-items:center;padding:16px 18px;border-radius:16px;background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(12px);}
+.layer .no{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:800;color:#000;background:var(--lc);box-shadow:0 0 20px -4px var(--lc);}
+.layer b{display:block;font-size:1rem;} .layer small{color:var(--muted);font-size:.85rem;}
+.mascot{position:relative;width:100%;max-width:470px;margin:0 auto;aspect-ratio:4/5;border-radius:28px;overflow:hidden;border:1px solid var(--line-s);background:#0d0d12;}
+.mascot video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.5;}
+.mascot .mk{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:62%;}
+.mascot .mk svg{width:100%;display:block;filter:drop-shadow(0 0 30px rgba(255,63,164,.45));}
+.mascot .lbl{position:absolute;top:18px;left:18px;right:18px;display:flex;justify-content:space-between;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;}
+.mascot .lbl span{padding:6px 10px;border-radius:8px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);}
+.mascot .bubble{position:absolute;right:16px;top:30%;max-width:46%;background:#fff;color:#111;border-radius:16px 16px 4px 16px;padding:10px 12px;font-size:.8rem;font-weight:600;line-height:1.3;}
+
+/* ---------- 10 rapor ---------- */
+.report{background:#17212b;border-radius:24px;padding:18px;border:1px solid #2b3946;max-width:470px;font-family:-apple-system,Segoe UI,Arial,sans-serif;box-shadow:0 40px 90px -30px rgba(0,0,0,.9);}
+.report .top{display:flex;gap:10px;align-items:center;font-size:.85rem;padding-bottom:12px;border-bottom:1px solid #22303c;}
+.report .top i{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--y),var(--o));display:block;}
+.report .top small{display:block;color:#6d8394;font-size:.7rem;}
+.report .body{margin-top:14px;background:#182533;border-radius:16px;padding:16px;font-size:.86rem;line-height:1.5;color:#d7e3ee;}
+.report .row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px dashed #2b3946;}
+.report .row:last-of-type{border-bottom:0;}
+.report .row b{color:#fff;font-variant-numeric:tabular-nums;}
+.report .row b.up::after{content:" ▲";color:var(--g);font-size:.7em;}
+.report .note{margin-top:10px;font-size:.66rem;color:#6d8394;text-align:right;}
+.track{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:30px;max-width:600px;}
+.track div{padding:16px 12px;border-radius:14px;background:var(--panel);border:1px solid var(--line);text-align:center;font-size:.85rem;font-weight:600;backdrop-filter:blur(10px);}
+.track div i{display:block;width:10px;height:10px;margin:0 auto 10px;border-radius:50%;background:var(--tc);box-shadow:0 0 12px var(--tc);}
+
+/* ---------- 11 yol haritası ---------- */
+.road{position:relative;display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:50px;}
+.road::before{content:"";position:absolute;left:0;right:0;top:27px;height:2px;background:linear-gradient(90deg,var(--r),var(--y),var(--g),var(--b),var(--o),var(--p));opacity:.55;}
+.ph{position:relative;padding-top:66px;}
+.ph .dt{position:absolute;top:12px;left:0;width:32px;height:32px;border-radius:50%;background:var(--bg);border:2px solid var(--pc);box-shadow:0 0 20px -2px var(--pc);display:grid;place-items:center;font-size:.8rem;font-weight:800;color:var(--pc);}
+.ph .when{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--pc);font-weight:700;}
+.ph b{display:block;font-size:1.08rem;margin-top:6px;line-height:1.2;}
+.ph p{font-size:.84rem;color:var(--muted);line-height:1.45;margin-top:8px;}
+.ph .pri{display:inline-block;margin-top:10px;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;padding:4px 8px;border-radius:6px;background:color-mix(in srgb,var(--pc) 16%,transparent);color:var(--pc);}
+.ph.later{opacity:.55;}
+
+/* ---------- 12 kapanış ---------- */
+.end .logo{font-size:clamp(3rem,8vw,7.5rem);}
+.end h2{margin-top:40px;}
+.steps{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px;}
+.steps div{padding:14px 20px;border-radius:14px;background:var(--panel);border:1px solid var(--line-s);font-weight:600;backdrop-filter:blur(10px);}
+.steps div span{color:var(--y);margin-right:8px;font-weight:800;}
+
+/* ---------- arayüz ---------- */
+.progress{position:fixed;top:26px;left:50%;transform:translateX(-50%);display:flex;gap:6px;z-index:30;}
+.seg{width:28px;height:3px;border-radius:3px;background:rgba(255,255,255,.14);overflow:hidden;cursor:pointer;}
+.seg i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--y),var(--o));transition:width .5s var(--ease);}
+.seg.done i,.seg.cur i{width:100%;}
+.brand{position:fixed;top:20px;left:26px;z-index:30;font-weight:900;font-size:.95rem;letter-spacing:-.01em;display:flex;gap:1px;}
+.nav{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:14px;background:var(--panel);backdrop-filter:blur(14px);border:1px solid var(--line-s);border-radius:100px;padding:8px 14px;z-index:30;}
+.nbtn{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.06);border:1px solid var(--line-s);color:var(--text);cursor:pointer;font-size:15px;display:grid;place-items:center;transition:all .15s;}
+.nbtn:hover:not(:disabled){border-color:var(--y);color:var(--y);}
+.nbtn:disabled{opacity:.3;cursor:default;}
+.counter{font-size:.82rem;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums;min-width:48px;text-align:center;}
+.hint-key{position:fixed;bottom:30px;right:26px;font-size:.74rem;color:var(--faint);z-index:30;}
+.hint-key .k{background:rgba(255,255,255,.08);border:1px solid var(--line);border-radius:5px;padding:2px 7px;font-weight:600;color:var(--muted);}
+.ffbtn{position:fixed;top:18px;right:22px;width:38px;height:38px;border-radius:11px;background:var(--panel);border:1px solid var(--line-s);color:var(--muted);cursor:pointer;font-size:15px;z-index:30;}
+.ffbtn:hover{color:var(--y);border-color:var(--y);}
+
+/* ---------- mobil ---------- */
+@media(max-width:900px){
+  .slide{align-items:flex-start;padding:76px 20px 100px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .slide.center{align-items:center;}
+  .shade{background:linear-gradient(0deg,rgba(6,6,8,.97) 20%,rgba(6,6,8,.7) 100%);}
+  .two,.hub-wrap{grid-template-columns:1fr;gap:34px;}
+  .mosaic{grid-template-columns:1fr 1fr;grid-template-rows:none;grid-auto-rows:150px;height:auto;}
+  .t1,.t4{grid-row:span 1;}
+  .status{grid-template-columns:1fr 1fr;}
+  .pipe{grid-template-columns:1fr;}
+  .brain{width:140px;margin:0 auto;}
+  .outs{grid-template-columns:1fr;} .out.wide{grid-column:auto;}
+  .road{grid-template-columns:1fr 1fr;row-gap:10px;} .road::before{display:none;}
+  .phone{width:30vw;} .phone.mid{width:36vw;}
+  .track{grid-template-columns:1fr 1fr;}
+  .hint-key,.progress{display:none;}
+  .targets{grid-template-columns:1fr;}
+  .hub{width:88%;}
+  .node{width:28%;translate:-50% -21px;}
+  .node .ic{width:42px;height:42px;border-radius:12px;margin-bottom:6px;}
+  .node .ic svg{width:21px;height:21px;}
+  .node b{font-size:.74rem;} .node small{display:none;}
+  .core b{font-size:.8rem;} .core small{display:none;}
+  .phones{gap:8px;} .phone{width:27vw;border-radius:22px;padding:5px;} .phone .scr{border-radius:18px;} .phone.mid{width:33vw;}
+  .phone .ui{font-size:.5rem;left:8px;right:8px;} .phone .side{display:none;}
+  .funnel .f{padding:9px 11px;font-size:.8rem;}
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="brand" aria-hidden="true"><span class="L1">R</span><span class="L2">E</span><span class="L3">K</span><span class="L4">L</span><span class="L5">A</span><span class="L6">M</span>&nbsp;<span class="L7">A</span><span class="L2">D</span><span class="L3">A</span><span class="L1">S</span><span class="L4">I</span></div>
+<div class="progress" id="progress"></div>
+<button class="ffbtn" id="ffbtn" title="Tam ekran (F)">⛶</button>
+
+<div class="deck" id="deck">
+
+<!-- GİRİŞ: İŞ BİRLİĞİ -->
+<section class="slide collab">
+  <div class="photo"><img src="assets/husrev.jpg" alt="Hüsrev"></div>
+  <div class="inner">
+    <div class="kicker" data-r style="--k:var(--c)">Dijital iş birliği · 2026</div>
+    <div class="x">
+      <div class="hai" data-r="left">Hüsrev <em>AI</em></div>
+      <div class="times" data-r="pop">×</div>
+      <div class="logo" data-r="right">
+        <div class="row"><span class="L1">R</span><span class="L2">E</span><span class="L3">K</span><span class="L4">L</span><span class="L5">A</span><span class="L6">M</span></div>
+        <div class="row"><span class="L7">A</span><span class="L2">D</span><span class="L3">A</span><span class="L1">S</span><span class="L4">I</span></div>
+      </div>
+    </div>
+    <p class="lead" data-r>Yapay zekâ ile kurulan, kendi kendine çalışan bir <b>dijital büyüme sistemi.</b></p>
+    <div class="handle" data-r><i></i>@husrev.ai</div>
+  </div>
+</section>
+
+<!-- 0 KAPAK -->
+<section class="slide cover">
+  <div class="bg"><img src="assets/intercontinental.jpg" alt="" style="filter:brightness(.55) saturate(.9)"></div><div class="shade"></div>
+  <div class="inner">
+    <div class="kicker" data-r style="--k:var(--y)">Dijital Büyüme Planı · 2026</div>
+    <div class="logo" data-r="pop">
+      <div class="row"><span class="L1">R</span><span class="L2">E</span><span class="L3">K</span><span class="L4">L</span><span class="L5">A</span><span class="L6">M</span></div>
+      <div class="row"><span class="L7">A</span><span class="L2">D</span><span class="L3">A</span><span class="L1">S</span><span class="L4">I</span></div>
+    </div>
+    <p class="tag" data-r>Şehrin ışığını siz yakıyorsunuz.<br>Şimdi sıra <span class="serif">internette parlamakta.</span></p>
+    <div class="cover-meta" data-r><span>Hazırlanan: <b>Adem Bey</b></span><span>Ankara</span><span>Tabela · Maket · Kurumsal</span></div>
+  </div>
+</section>
+
+<!-- 1 PORTFÖY -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker" data-r>Bugünkü güç</div>
+    <h2 data-r>Beş yıldızlı otelden kafe zincirine.<br><span class="serif glow">İşleriniz zaten konuşuyor.</span></h2>
+    <div class="mosaic">
+      <div class="tile t1" data-r="pop"><img src="assets/intercontinental.jpg" alt=""><div class="cap">InterContinental Grand Ankara<small>Işıklı harf · otel cephesi</small></div></div>
+      <div class="tile" data-r="pop"><img src="assets/archers.jpg" alt=""><div class="cap">Archers Coffee &amp; Eatery<small>Arkadan aydınlatmalı kutu harf</small></div></div>
+      <div class="tile" data-r="pop"><img src="assets/dags.jpg" alt=""><div class="cap">DAGS Coffee<small>Kutu harf · LED</small></div></div>
+      <div class="tile t4" data-r="pop"><video src="assets/mytes.mp4" muted loop playsinline preload="metadata"></video><div class="cap">Mytes Mühendislik<small>Bina cephesi</small></div></div>
+      <div class="tile" data-r="pop"><img src="assets/baytalmaqam.jpg" alt=""><div class="cap">Bayt Al Maqam<small>Yurt dışı proje · iki dilli</small></div></div>
+      <div class="tile" data-r="pop"><img src="assets/castlelife.jpg" alt=""><div class="cap">Castle Life · Karataylı İnşaat<small>Site giriş kapısı</small></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 BUGÜN -->
+<section class="slide">
+  <div class="bg"><img src="assets/archers.jpg" alt=""></div><div class="shade"></div>
+  <div class="inner">
+    <div class="kicker" data-r style="--k:var(--r)">Durum tespiti</div>
+    <h2 data-r>Bu işler atölyede parlıyor.<br><span class="serif" style="color:var(--muted)">İnternette ise görünmüyor.</span></h2>
+    <div class="status">
+      <div class="st" data-r="pop" data-step="1"><div class="n">Web sitesi</div><div class="v"><i class="dot"></i>Yok</div></div>
+      <div class="st" data-r="pop" data-step="1"><div class="n">Google Haritalar</div><div class="v"><i class="dot"></i>Yok</div></div>
+      <div class="st" data-r="pop" data-step="1"><div class="n">LinkedIn</div><div class="v"><i class="dot"></i>Yok</div></div>
+      <div class="st" data-r="pop" data-step="1"><div class="n">YouTube</div><div class="v"><i class="dot"></i>Yok</div></div>
+      <div class="st warn" data-r="pop" data-step="1"><div class="n">Instagram</div><div class="v"><i class="dot"></i>Sessiz</div></div>
+    </div>
+    <p class="quote" data-r data-step="2">Bugün müşteri tabelacıyı <b>önce Google'da arıyor.</b> Orada olmayan firma, teklif listesine hiç girmiyor.</p>
+  </div>
+</section>
+
+<!-- 3 MERKEZ -->
+<section class="slide">
+  <div class="inner hub-wrap">
+    <div>
+      <div class="kicker" data-r style="--k:var(--y)">Sistemin kalbi</div>
+      <h2 data-r>Her kanal tek bir yere akar:<br><span class="serif glow" style="--k:var(--y)">web siteniz.</span></h2>
+      <p class="lead" data-r>Her platformun ayrı bir görevi var. Hepsi müşteriyi aynı kapıya getirir. Kapıda <b>teklif formu, WhatsApp ve telefon</b> bekler.</p>
+      <div class="conv" data-r data-step="3">
+        <span class="chip" style="--cc:var(--g)"><i></i>Teklif formu</span>
+        <span class="chip" style="--cc:var(--g)"><i></i>WhatsApp</span>
+        <span class="chip" style="--cc:var(--g)"><i></i>Telefon</span>
+      </div>
+    </div>
+    <div class="hub" data-r="fade">
+      <svg id="hubSvg" fill="none">
+        <g id="hubLines" data-r="fade" data-step="2" stroke-width="2.5" stroke-linecap="round"></g>
+      </svg>
+      <div class="core" data-r="pop"><div class="ring"></div><b>Web Siteniz</b><small>teklif · arama · mesaj</small></div>
+      <div class="node" data-r="pop" data-step="1" style="left:50%;top:9%;--nc:var(--g)"><div class="ic"><svg viewBox="0 0 24 24"><path fill="#2bd97c" d="M21.35 11.1H12v2.98h5.35c-.5 2.45-2.6 3.92-5.35 3.92a6 6 0 1 1 3.92-10.55l2.2-2.2A9 9 0 1 0 21 12c0-.3-.02-.6-.05-.9z"/></svg></div><b>Google + Blog</b><small>arayanı bulur</small></div>
+      <div class="node" data-r="pop" data-step="1" style="left:88%;top:35%;--nc:var(--o)"><div class="ic"><svg viewBox="0 0 24 24"><path fill="#ff8a1f" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></svg></div><b>Haritalar</b><small>Ankara'da yakındakini</small></div>
+      <div class="node" data-r="pop" data-step="1" style="left:73%;top:86%;--nc:var(--p)"><div class="ic"><svg viewBox="0 0 24 24"><path fill="#ff3fa4" d="M10 15.5v-7l6 3.5-6 3.5zM21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2C2 8.8 2 12 2 12s0 3.2.4 4.8a2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8c.4-1.6.4-4.8.4-4.8s0-3.2-.4-4.8z"/></svg></div><b>Shorts + Reels</b><small>yeni kitleye ulaşır</small></div>
+      <div class="node" data-r="pop" data-step="1" style="left:27%;top:86%;--nc:var(--b)"><div class="ic"><svg viewBox="0 0 24 24"><path fill="#3b82ff" d="M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05a3.74 3.74 0 0 1 3.37-1.85c3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12zM7.12 20.45H3.56V9h3.56v11.45z"/></svg></div><b>LinkedIn</b><small>kurumsal kapı</small></div>
+      <div class="node" data-r="pop" data-step="1" style="left:12%;top:35%;--nc:var(--c)"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#22d3ee" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.4" cy="6.6" r="1" fill="#22d3ee" stroke="none"/></svg></div><b>Instagram</b><small>vitrin ve güven</small></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 GOOGLE SEO + BLOG -->
+<section class="slide" style="--k:var(--g)">
+  <div class="inner two">
+    <div>
+      <div class="kicker" data-r>Google · SEO · Blog</div>
+      <h2 data-r>Arkada 7/24 çalışan<br><span class="serif glow">bir satış temsilcisi.</span></h2>
+      <p class="lead" data-r>Her blog yazısı ve her hizmet sayfası, Google'da <b>yeni bir kapı</b> açar. Reklam bitince kaybolmaz; aylar boyunca arama trafiği toplar.</p>
+      <div class="big-n" data-r data-step="1"><span class="num" data-count="48">0</span><span class="lbl">ayda 4 yazıyla, ilk yılın sonunda Google'da duran kalıcı sayfa</span></div>
+      <div class="ilce" data-r data-step="2">
+        <span>Çankaya tabela</span><span>Yenimahalle tabela</span><span>Keçiören tabela</span><span>Etimesgut tabela</span><span>Ostim tabela</span><span>Sincan tabela</span><span>Mimari maket</span><span>Kutu harf</span><span>Işıklı tabela</span>
+      </div>
+    </div>
+    <div data-r="right">
+      <div class="gcard">
+        <div class="gbar"><svg width="18" height="18" viewBox="0 0 24 24"><path fill="#9aa0a6" d="M15.5 14h-.8l-.3-.3A6.5 6.5 0 1 0 9.5 16a6.5 6.5 0 0 0 4.2-1.6l.3.3v.8l5 5 1.5-1.5-5-5zm-6 0a4.5 4.5 0 1 1 0-9 4.5 4.5 0 0 1 0 9z"/></svg><span class="typed" id="gtype"></span></div>
+        <div class="gres">
+          <div class="site"><span class="fav"><span class="L1">R</span><span class="L2">A</span></span><div>Reklam Adası<br><small>reklamadasi › ankara-isikli-tabela</small></div></div>
+          <div class="t">Ankara Işıklı Kutu Harf Tabela | Reklam Adası</div>
+          <div class="d">InterContinental Grand Ankara'dan kafe zincirlerine. Paslanmaz, pleksi ve LED kutu harf üretimi. Ücretsiz keşif ve teklif.</div>
+        </div>
+        <div class="gsep"></div>
+        <div class="gres dim"><div class="t" style="font-size:1rem">Diğer firmalar…</div></div>
+      </div>
+      <p class="claude-tag" style="margin-top:16px">Ayrıca ChatGPT ve Gemini gibi <b style="color:var(--g)">&nbsp;yapay zekâ asistanları&nbsp;</b> da bu sayfaları okuyup önerir.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5 HARİTALAR -->
+<section class="slide" style="--k:var(--o)">
+  <div class="inner two">
+    <div data-r="left">
+      <div class="map">
+        <div class="grid"></div>
+        <div class="msearch">🔍 yakınımdaki tabelacı</div>
+        <div class="pin s" style="left:24%;top:34%"><div class="p"></div></div>
+        <div class="pin s" style="left:78%;top:30%"><div class="p"></div></div>
+        <div class="pin s" style="left:30%;top:62%"><div class="p"></div></div>
+        <div class="pin main"><div class="p"></div></div>
+        <div class="mcard">
+          <div class="nm">Reklam Adası</div>
+          <div class="rt">Tabela firması · Ankara · <em>★★★★★</em></div>
+          <div class="acts"><span class="pr">Ara</span><span>Yol tarifi</span><span>Web sitesi</span><span>Paylaş</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="kicker" data-r>Google İşletme Profili</div>
+      <h2 data-r>Ankara'da tabela arayan<br><span class="serif glow">ilk sizi görsün.</span></h2>
+      <ul class="pts">
+        <li data-r><span><b>Haritalarda kayıt:</b> adres, çalışma saati, telefon ve "Ara" düğmesi.</span></li>
+        <li data-r><span><b>Her hafta yeni paylaşım:</b> biten iş fotoğrafı profile otomatik düşer.</span></li>
+        <li data-r><span><b>Müşteri yorumları:</b> teslimden sonra yorum isteme akışı.</span></li>
+        <li data-r><span><b>Dükkân sahibi kitlesi:</b> kafe, eczane, mağaza, restoran.</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 6 SHORTS + REELS -->
+<section class="slide" style="--k:var(--p)">
+  <div class="inner two">
+    <div>
+      <div class="kicker" data-r>YouTube Shorts · Instagram Reels</div>
+      <h2 data-r>Atölyeniz,<br><span class="serif glow">en iyi reklamınız.</span></h2>
+      <p class="lead" data-r>Lazerin metali kestiği an, LED'in ilk yandığı an. Kısa video keşfette <b>sizi hiç tanımayan insanlara</b> ulaşır. Profil linki onları siteye taşır.</p>
+      <div class="funnel" data-r data-step="1">
+        <span class="f">Kısa video</span><span class="ar">→</span><span class="f">Profil</span><span class="ar">→</span><span class="f">Web sitesi</span><span class="ar">→</span><span class="f end">Teklif</span>
+      </div>
+    </div>
+    <div class="phones" data-r="fade">
+      <div class="phone side-l" data-r="pop"><div class="scr"><video src="assets/lazer_altin.mp4" muted loop playsinline preload="metadata"></video><div class="ui"><b>@reklamadasi</b>Altın aynaya lazer işçilik ✨</div></div></div>
+      <div class="phone mid" data-r="pop"><div class="scr"><video src="assets/rys_cephe.mp4" muted loop playsinline preload="metadata"></video><div class="side"><i></i><i></i><i></i></div><div class="ui"><b>@reklamadasi</b>Gece yanınca başka güzel. RYS cephe tabelası.<span class="lnk">🔗 reklamadasi · teklif al</span></div></div></div>
+      <div class="phone side-r" data-r="pop"><div class="scr"><video src="assets/lazer_celik.mp4" muted loop playsinline preload="metadata"></video><div class="ui"><b>@reklamadasi</b>Paslanmaz çelik, milimetrik kesim.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 LINKEDIN -->
+<section class="slide" style="--k:var(--b)">
+  <div class="bg"><video src="assets/poltek.mp4" muted loop playsinline preload="metadata"></video></div><div class="shade"></div>
+  <div class="inner two">
+    <div>
+      <div class="kicker" data-r>LinkedIn · Kurumsal</div>
+      <h2 data-r>Satın alma müdürü<br><span class="serif glow">LinkedIn'de karar verir.</span></h2>
+      <p class="lead" data-r>Otel, fabrika, zincir mağaza. Bu firmalarda tabela kararını veren kişi Instagram'da değil, LinkedIn'de. Orada <b>referans projelerle</b> karşısına çıkıyoruz.</p>
+      <div class="targets">
+        <div data-r="pop" data-step="1">Oteller<small>InterContinental gibi</small></div>
+        <div data-r="pop" data-step="1">Fabrika ve sanayi<small>Poltek Metal, Mytes gibi</small></div>
+        <div data-r="pop" data-step="1">Zincir mağaza ve kafe<small>Archers, DAGS gibi</small></div>
+        <div data-r="pop" data-step="1">Müteahhit ve mimarlar<small>Castle Life gibi</small></div>
+      </div>
+    </div>
+    <div data-r="right">
+      <div class="li">
+        <div class="hd"><div class="av"><span class="L1">R</span><span class="L2">A</span></div><div><b>Reklam Adası</b><small>Tabela ve Maket · Ankara · 2 gün</small></div></div>
+        <div class="tx">InterContinental Grand Ankara için ürettiğimiz ışıklı harfler atölyeden çıktı. Ölçüm, üretim ve montaj tek elden. Otel ve kurumsal projeleriniz için görüşelim.</div>
+        <img src="assets/intercontinental.jpg" alt="">
+        <div class="ft"><span>👍 Beğen</span><span>💬 Yorum</span><span>↗ Paylaş</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 CLAUDE HATTI -->
+<section class="slide" style="--k:#e8a68d">
+  <div class="inner">
+    <div class="kicker" data-r>Sizin tek işiniz</div>
+    <h2 data-r>Fotoğrafı Telegram'a atın.<br><span class="serif glow">Gerisini yapay zekâ yazar.</span></h2>
+    <div class="pipe" id="pipe">
+      <div class="tg" data-r="left">
+        <div class="top"><i></i><div><b>Reklam Adası İçerik</b><small>bot</small></div></div>
+        <div class="msg"><img src="assets/archers.jpg" alt=""><p>Archers için cephe tabelası bitti, yarın montaj.<small>21:42 ✓✓</small></p></div>
+        <div class="bot" data-r data-step="1">5 platform için içerik hazır. Kontrol edip onaylayın.<span class="typing"><i></i><i></i><i></i></span>
+          <div class="btns"><span class="ok">✓ Onayla</span><span>✎ Düzelt</span></div></div>
+      </div>
+      <div class="brain" data-r="pop">
+        <div>
+          <svg viewBox="0 0 24 24"><path fill="#d97757" d="M12 1.5l1.9 6.4 6.4-2.4-4.2 5.3 5.4 3.8-6.6.3.6 6.6L12 16.4l-3.5 5.1.6-6.6-6.6-.3 5.4-3.8-4.2-5.3 6.4 2.4z"/></svg>
+          <b>Claude</b><small>Anthropic</small>
+        </div>
+      </div>
+      <div class="outs">
+        <div class="out" data-r="right" data-step="1" style="--oc:var(--g)"><div class="h">Blog · Google<em>✓ yayında</em></div><p>"Kafe cephesinde ışıklı kutu harf: Archers Coffee &amp; Eatery projesi"</p></div>
+        <div class="out" data-r="right" data-step="1" style="--oc:var(--b)"><div class="h">LinkedIn<em>✓ yayında</em></div><p>Archers Coffee &amp; Eatery cephe tabelası atölyemizden çıktı. Taş panel üzerinde arkadan aydınlatmalı kutu harf.</p></div>
+        <div class="out" data-r="right" data-step="1" style="--oc:var(--c)"><div class="h">Instagram<em>✓ yayında</em></div><p>Gece yanınca başka güzel ✨ Archers için arkadan ışıklı harfler. #ankaratabela #kutuharf</p></div>
+        <div class="out" data-r="right" data-step="1" style="--oc:var(--p)"><div class="h">Shorts · Reels<em>✓ yayında</em></div><p>0-2 sn harfler karanlıkta · 2-5 sn LED yanıyor · 5-8 sn logo ve site adresi</p></div>
+        <div class="out wide" data-r="right" data-step="1" style="--oc:var(--o)"><div class="h">Google Haritalar<em>✓ yayında</em></div><p>Yeni proje: Archers Coffee &amp; Eatery cephe tabelası. Ücretsiz keşif için arayın.</p></div>
+      </div>
+    </div>
+    <p class="claude-tag" data-r data-step="2">Her platforma <b>&nbsp;kendi dilinde&nbsp;</b> ayrı metin. Onay tek tık. Yayın ve zamanlama otomatik.</p>
+  </div>
+</section>
+
+<!-- 9 VİDEO + MASKOT -->
+<section class="slide" style="--k:var(--p)">
+  <div class="inner two">
+    <div>
+      <div class="kicker" data-r>Video · Animasyon · YouTube</div>
+      <h2 data-r>Gerçek atölye,<br><span class="serif glow">akılda kalan bir yüz.</span></h2>
+      <div class="layers">
+        <div class="layer" data-r="left" style="--lc:var(--y)"><span class="no">1</span><div><b>Gerçek çekim</b><small>Sizin telefonla çektiğiniz atölye ve montaj videosu</small></div></div>
+        <div class="layer" data-r="left" style="--lc:var(--c)"><span class="no">2</span><div><b>Yapay zekâ sahneleri</b><small>Açılış, geçiş ve kapanış. Logonuz neon gibi yanar.</small></div></div>
+        <div class="layer" data-r="left" style="--lc:var(--p)"><span class="no">3</span><div><b>Reklam Adası maskotu</b><small>Her ay hikayeli bir animasyon reklamı. YouTube kanalı bununla açılır.</small></div></div>
+      </div>
+    </div>
+    <div data-r="right">
+      <div class="mascot">
+        <video src="assets/lazer_celik.mp4" muted loop playsinline preload="metadata"></video>
+        <div class="lbl"><span style="color:var(--p)">● Maskot</span><span>Taslak fikir</span></div>
+        <div class="bubble">Tabelan hazır! Işıkları yakıyorum 💡</div>
+        <div class="mk">
+          <svg viewBox="0 0 200 220">
+            <defs><linearGradient id="mg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff3fa4"/><stop offset="1" stop-color="#ff8a1f"/></linearGradient></defs>
+            <rect x="40" y="40" width="120" height="100" rx="26" fill="url(#mg)"/>
+            <rect x="52" y="54" width="96" height="58" rx="16" fill="#0d0d12"/>
+            <circle cx="80" cy="82" r="10" fill="#22d3ee"><animate attributeName="r" values="10;10;2;10" dur="4s" repeatCount="indefinite"/></circle>
+            <circle cx="120" cy="82" r="10" fill="#22d3ee"><animate attributeName="r" values="10;10;2;10" dur="4s" repeatCount="indefinite"/></circle>
+            <path d="M84 100 Q100 110 116 100" stroke="#ffd23f" stroke-width="4" fill="none" stroke-linecap="round"/>
+            <line x1="100" y1="40" x2="100" y2="18" stroke="#ffd23f" stroke-width="4"/>
+            <circle cx="100" cy="14" r="8" fill="#ffd23f"><animate attributeName="opacity" values="1;.3;1" dur="1.6s" repeatCount="indefinite"/></circle>
+            <rect x="62" y="140" width="76" height="80" rx="18" fill="#3b82ff"/>
+            <text x="100" y="186" text-anchor="middle" font-family="Outfit" font-weight="900" font-size="22" fill="#fff">RA</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 ÖLÇÜM + RAPOR -->
+<section class="slide" style="--k:var(--y)">
+  <div class="inner two">
+    <div>
+      <div class="kicker" data-r>Ölçüm · Haftalık rapor</div>
+      <h2 data-r>Tahmin yok.<br><span class="serif glow">Her arama sayılır.</span></h2>
+      <p class="lead" data-r>Hangi kanaldan kaç kişi geldi, kaçı aradı, kaçı WhatsApp'tan yazdı. Hepsi ölçülür. <b>Her pazartesi sabahı</b> özet Telegram'ınıza düşer.</p>
+      <div class="track">
+        <div data-r="pop" data-step="1" style="--tc:var(--g)"><i></i>Teklif formu</div>
+        <div data-r="pop" data-step="1" style="--tc:var(--g)"><i></i>WhatsApp tıklama</div>
+        <div data-r="pop" data-step="1" style="--tc:var(--o)"><i></i>Telefon araması</div>
+        <div data-r="pop" data-step="1" style="--tc:var(--b)"><i></i>Google sıralaması</div>
+      </div>
+    </div>
+    <div data-r="right">
+      <div class="report">
+        <div class="top"><i></i><div><b>Reklam Adası Rapor</b><small>Pazartesi 09:00</small></div></div>
+        <div class="body">
+          <div style="font-weight:700;margin-bottom:6px">📊 Haftalık özet</div>
+          <div class="row"><span>Site ziyareti</span><b class="up">…</b></div>
+          <div class="row"><span>Telefon araması</span><b class="up">…</b></div>
+          <div class="row"><span>WhatsApp mesajı</span><b class="up">…</b></div>
+          <div class="row"><span>Teklif formu</span><b>…</b></div>
+          <div class="row"><span>En çok gelen kanal</span><b>…</b></div>
+          <div class="row"><span>Yayınlanan içerik</span><b>…</b></div>
+          <div class="note">Rakamlar ölçüm kurulunca gerçek verilerle dolar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 YOL HARİTASI -->
+<section class="slide">
+  <div class="inner">
+    <div class="kicker" data-r>Yol haritası</div>
+    <h2 data-r>Altı adımda <span class="serif glow">görünür firma.</span></h2>
+    <div class="road">
+      <div class="ph" data-r style="--pc:var(--r)"><span class="dt">1</span><div class="when">1-2. hafta</div><b>Ölçüm ve temel</b><p>Search Console, analitik, arama ve WhatsApp takibi, İşletme Profili.</p><span class="pri">Öncelik</span></div>
+      <div class="ph" data-r style="--pc:var(--y)"><span class="dt">2</span><div class="when">2-4. hafta</div><b>Web sitesi ve SEO yapısı</b><p>Hizmet sayfaları, Ankara ilçe sayfaları, Türkiye geneli maket sayfaları, blog.</p><span class="pri">Öncelik</span></div>
+      <div class="ph" data-r style="--pc:var(--g)"><span class="dt">3</span><div class="when">2. ay</div><b>İçerik hattı</b><p>Telegram'dan fotoğraf, yapay zekâdan 5 platforma içerik, onay, yayın.</p><span class="pri">Öncelik</span></div>
+      <div class="ph later" data-r style="--pc:var(--b)"><span class="dt">4</span><div class="when">3. ay ve sonrası</div><b>Reklam hazırlığı</b><p>Google Ads: Ankara tabela ve Türkiye maket. Meta için açılış sayfaları.</p></div>
+      <div class="ph later" data-r style="--pc:var(--o)"><span class="dt">5</span><div class="when">2. ay</div><b>Haftalık rapor</b><p>Tüm kanallar tek panelde. Her pazartesi Telegram özeti.</p></div>
+      <div class="ph" data-r style="--pc:var(--p)"><span class="dt">6</span><div class="when">2-3. ay</div><b>Video ve maskot</b><p>Hibrit video akışı, maskotlu aylık reklam, YouTube kanalı.</p><span class="pri">Öncelik</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 12 KAPANIŞ -->
+<section class="slide center end">
+  <div class="bg"><video src="assets/mytes.mp4" muted loop playsinline preload="metadata"></video></div><div class="shade full"></div>
+  <div class="inner">
+    <div class="logo" data-r="pop">
+      <div class="row"><span class="L1">R</span><span class="L2">E</span><span class="L3">K</span><span class="L4">L</span><span class="L5">A</span><span class="L6">M</span></div>
+      <div class="row"><span class="L7">A</span><span class="L2">D</span><span class="L3">A</span><span class="L1">S</span><span class="L4">I</span></div>
+    </div>
+    <h2 data-r>Işıklar sizden.<br><span class="serif glow" style="--k:var(--y)">Görünürlük bizden.</span></h2>
+    <div class="steps" data-r>
+      <div><span>01</span>Onay</div><div><span>02</span>Ölçüm kurulumu</div><div><span>03</span>Web sitesi yayında</div><div><span>04</span>İlk içerik Telegram'dan</div>
+    </div>
+  </div>
+</section>
+
+</div>
+
+<div class="nav">
+  <button class="nbtn" id="prev" title="Geri (←)">‹</button>
+  <span class="counter" id="counter">1 / 14</span>
+  <button class="nbtn" id="next" title="İleri (Space / →)">›</button>
+</div>
+<div class="hint-key"><span class="k">Space</span> · <span class="k">←</span><span class="k">→</span> · tekerlek · <span class="k">F</span> tam ekran</div>
+
+<script>
+/* deck motoru: sunum-deck iskeletinden + tekerlek, kaydırma, video ve yazma efekti */
+const deck=document.getElementById('deck');
+const slides=Array.from(deck.querySelectorAll('.slide'));
+const progress=document.getElementById('progress');
+const counter=document.getElementById('counter');
+const prevBtn=document.getElementById('prev');
+const nextBtn=document.getElementById('next');
+const N=slides.length;
+let cur=0,beat=0,maxBeat=0,timers=[];
+const clearT=()=>{timers.forEach(clearTimeout);timers=[];};
+
+slides.forEach((_,i)=>{const s=document.createElement('div');s.className='seg';s.innerHTML='<i></i>';s.addEventListener('click',()=>show(i));progress.appendChild(s);});
+const segs=Array.from(progress.children);
+
+const easeOutCubic=t=>1-Math.pow(1-t,3);
+function countUp(el){
+  if(el.dataset.done==='1')return;el.dataset.done='1';
+  const target=+el.dataset.count,prefix=el.dataset.prefix||'',suffix=el.dataset.suffix||'',dur=1600,start=performance.now();
+  (function frame(now){const t=Math.min(1,(now-start)/dur);el.textContent=prefix+Math.round(easeOutCubic(t)*target).toLocaleString('tr-TR')+suffix;if(t<1)requestAnimationFrame(frame);})(performance.now());
+}
+function applyReveal(el){el.classList.add('in');if(el.hasAttribute('data-count'))countUp(el);el.querySelectorAll('[data-count]').forEach(countUp);}
+function beatItems(slide,b){return Array.from(slide.querySelectorAll('[data-r]')).filter(e=>(+(e.dataset.step||0))===b);}
+function revealBeat(b,instant){
+  beatItems(slides[cur],b).forEach((el,k)=>{if(instant)applyReveal(el);else timers.push(setTimeout(()=>applyReveal(el),120+k*150));});
+  onBeat(cur,b);
+}
+function resetSlide(s){
+  s.querySelectorAll('[data-r]').forEach(e=>e.classList.remove('in'));
+  s.querySelectorAll('[data-count]').forEach(e=>{e.dataset.done='0';e.textContent=(e.dataset.prefix||'')+'0'+(e.dataset.suffix||'');});
+  s.querySelectorAll('video').forEach(v=>v.pause());
+  const p=s.querySelector('#pipe');if(p)p.classList.remove('live');
+}
+function calcMax(s){let m=0;s.querySelectorAll('[data-step]').forEach(e=>m=Math.max(m,+e.dataset.step));return m;}
+function show(i,openAll){
+  i=Math.max(0,Math.min(N-1,i));clearT();
+  const old=slides[cur];old.classList.remove('active');resetSlide(old);
+  cur=i;beat=0;const s=slides[cur];s.classList.add('active');
+  s.scrollTop=0;
+  s.querySelectorAll('video').forEach(v=>{v.currentTime=0;v.play().catch(()=>{});});
+  maxBeat=calcMax(s);
+  if(openAll){for(let b=0;b<=maxBeat;b++)revealBeat(b,true);beat=maxBeat;}
+  else revealBeat(0,false);
+  // komşu slaytların videolarını önceden yükle
+  [cur+1].forEach(k=>slides[k]&&slides[k].querySelectorAll('video').forEach(v=>v.preload='auto'));
+  if(s.querySelector('.hub'))requestAnimationFrame(drawHub);
+  updateChrome();
+}
+function updateChrome(){
+  segs.forEach((sg,k)=>{sg.classList.toggle('done',k<cur);sg.classList.toggle('cur',k===cur);});
+  counter.textContent=(cur+1)+' / '+N;
+  prevBtn.disabled=cur===0&&beat===0;
+  nextBtn.disabled=cur===N-1&&beat===maxBeat;
+}
+function next(){if(beat<maxBeat){beat++;revealBeat(beat,false);updateChrome();}else if(cur<N-1)show(cur+1);}
+function prev(){if(cur>0)show(cur-1,true);}
+
+/* slayta özel anlar */
+let typeTimer=null;
+function onBeat(i,b){
+  const s=slides[i];
+  if(s.querySelector('#gtype')&&b===0){typeQuery('ankara ışıklı kutu harf tabela');}
+  if(s.querySelector('#pipe')&&b===2){timers.push(setTimeout(()=>s.querySelector('#pipe').classList.add('live'),200));}
+}
+function typeQuery(q){
+  const el=document.getElementById('gtype');clearInterval(typeTimer);el.textContent='';let k=0;
+  setTimeout(()=>{typeTimer=setInterval(()=>{el.textContent=q.slice(0,++k);if(k>=q.length)clearInterval(typeTimer);},55);},700);
+}
+
+
+/* merkez şema: çizgileri gerçek konumlardan hesapla (kanal kutusu → web sitesi dairesi) */
+function drawHub(){
+  const hub=document.querySelector('.hub');if(!hub)return;
+  const W=hub.clientWidth,H=hub.clientHeight;if(!W)return;
+  const svg=document.getElementById('hubSvg'),g=document.getElementById('hubLines');
+  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
+  const core=hub.querySelector('.core'),cx=W/2,cy=H/2,cr=core.offsetWidth/2+18;
+  const cols={g:'#2bd97c',o:'#ff8a1f',p:'#ff3fa4',b:'#3b82ff',c:'#22d3ee'};
+  g.innerHTML='';
+  hub.querySelectorAll('.node').forEach(n=>{
+    const x=parseFloat(n.style.left)/100*W,y=parseFloat(n.style.top)/100*H;
+    const ir=n.querySelector('.ic').offsetWidth/2+10;
+    const dx=cx-x,dy=cy-y,d=Math.hypot(dx,dy),ux=dx/d,uy=dy/d;
+    const sr=uy>0.6?(n.offsetHeight-n.querySelector('.ic').offsetWidth/2+8)/uy:ir; // yazının altından başlasın
+    const key=(n.style.getPropertyValue('--nc').match(/--(\w)\)/)||[])[1];
+    const col=cols[key]||'#fff';
+    const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+    l.setAttribute('x1',x+ux*sr);l.setAttribute('y1',y+uy*sr);
+    l.setAttribute('x2',cx-ux*cr);l.setAttribute('y2',cy-uy*cr);
+    l.setAttribute('stroke',col);l.setAttribute('class','flow');l.style.color=col;
+    g.appendChild(l);
+  });
+}
+window.addEventListener('resize',drawHub);
+
+nextBtn.addEventListener('click',next);prevBtn.addEventListener('click',prev);
+window.addEventListener('keydown',e=>{
+  if(e.code==='Space'||e.code==='ArrowRight'||e.code==='ArrowDown'||e.code==='PageDown'){e.preventDefault();next();}
+  else if(e.code==='ArrowLeft'||e.code==='ArrowUp'||e.code==='PageUp'){e.preventDefault();prev();}
+  else if(e.key==='f'||e.key==='F')toggleFs();
+});
+/* fare tekerleği: bir hareket = bir adım */
+let wheelLock=false;
+window.addEventListener('wheel',e=>{
+  const s=slides[cur];
+  if(s.scrollHeight>s.clientHeight+4){ // mobil gibi taşan slaytta önce içerik kaysın
+    const atEnd=s.scrollTop+s.clientHeight>=s.scrollHeight-2,atTop=s.scrollTop<=0;
+    if((e.deltaY>0&&!atEnd)||(e.deltaY<0&&!atTop))return;
+  }
+  e.preventDefault();
+  if(wheelLock||Math.abs(e.deltaY)<12)return;
+  wheelLock=true;setTimeout(()=>wheelLock=false,850);
+  e.deltaY>0?next():prev();
+},{passive:false});
+/* dokunmatik: yatay kaydırma = slayt değiştir */
+let tx=0,ty=0;
+window.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;ty=e.touches[0].clientY;},{passive:true});
+window.addEventListener('touchend',e=>{
+  const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;
+  if(Math.abs(dx)>50&&Math.abs(dx)>Math.abs(dy)*1.3){dx<0?next():prev();}
+},{passive:true});
+function toggleFs(){if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();else document.exitFullscreen?.();}
+document.getElementById('ffbtn').addEventListener('click',toggleFs);
+show(0);
+</script>
+</body>
+</html>

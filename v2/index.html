@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>Reklam Adası · Hüsrev AI Teklif</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060608;--bg2:#0d0d12;--text:#f7f7f8;--muted:#a1a1aa;--faint:#71717a;
+  --line:rgba(255,255,255,.09);--line-s:rgba(255,255,255,.18);--panel:rgba(18,18,24,.72);
+  --r:#ff3b4e;--y:#ffd23f;--g:#2bd97c;--b:#3b82ff;--o:#ff8a1f;--p:#ff3fa4;--c:#22d3ee;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+.serif{font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;}
+img,video{display:block;}
+
+/* üst çubuk */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:space-between;align-items:center;padding:16px 26px;
+  background:linear-gradient(180deg,rgba(6,6,8,.9),rgba(6,6,8,0));pointer-events:none;}
+.topbar>*{pointer-events:auto;}
+.brand{font-weight:900;font-size:.95rem;letter-spacing:-.01em;display:flex;align-items:center;gap:12px;}
+.brand .x{color:var(--faint);font-weight:300;}
+.brand .h em{font-style:normal;color:var(--c);}
+.play{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:100px;background:var(--panel);border:1px solid var(--line-s);color:var(--text);
+  font:600 .85rem 'Outfit';cursor:pointer;backdrop-filter:blur(12px);transition:border-color .2s,color .2s;}
+.play:hover{border-color:var(--y);color:var(--y);}
+.play i{font-style:normal;font-size:.75rem;}
+.prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:60;background:linear-gradient(90deg,var(--r),var(--y),var(--g),var(--b),var(--p));}
+
+/* bölümler */
+section{position:relative;min-height:100vh;padding:120px 7vw;display:flex;align-items:center;overflow:hidden;}
+.wrap{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;}
+.bgm{position:absolute;inset:0;z-index:0;}
+.bgm img,.bgm video{width:100%;height:100%;object-fit:cover;}
+.shade{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(6,6,8,.97) 0%,rgba(6,6,8,.82) 45%,rgba(6,6,8,.45) 100%);}
+.shade.c{background:radial-gradient(ellipse at center,rgba(6,6,8,.6),rgba(6,6,8,.95) 75%);}
+.kick{display:inline-flex;align-items:center;gap:12px;font-size:.78rem;letter-spacing:.32em;text-transform:uppercase;font-weight:700;color:var(--k,var(--y));margin-bottom:22px;}
+.kick::before{content:"";width:32px;height:2px;background:currentColor;box-shadow:0 0 12px currentColor;}
+h1{font-size:clamp(2.6rem,6.6vw,6.2rem);font-weight:800;line-height:.98;letter-spacing:-.035em;}
+h2{font-size:clamp(2rem,4.6vw,4.2rem);font-weight:800;line-height:1.02;letter-spacing:-.03em;}
+h1 .serif,h2 .serif{font-size:1.1em;}
+.lead{font-size:clamp(1.05rem,1.6vw,1.35rem);color:var(--muted);line-height:1.55;max-width:680px;margin-top:22px;font-weight:300;}
+.lead b{color:var(--text);font-weight:600;}
+.src{font-size:.75rem;color:var(--faint);margin-top:18px;line-height:1.5;}
+.src a{color:var(--faint);}
+.glow{color:var(--k,var(--y));text-shadow:0 0 28px color-mix(in srgb,var(--k,var(--y)) 50%,transparent);}
+
+/* görünce açılma */
+.rv{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform 1s var(--ease);}
+.rv.in{opacity:1;transform:none;}
+.rv.d1{transition-delay:.12s}.rv.d2{transition-delay:.24s}.rv.d3{transition-delay:.36s}.rv.d4{transition-delay:.48s}
+
+/* logo */
+.logo{display:flex;width:fit-content;flex-direction:column;line-height:.86;font-weight:900;letter-spacing:-.02em;}
+.logo .row{display:flex;} .logo .row:nth-child(2){padding-left:.9em;}
+.logo span{text-shadow:0 0 18px currentColor,0 0 60px color-mix(in srgb,currentColor 45%,transparent);}
+.L1{color:var(--r)}.L2{color:var(--y)}.L3{color:var(--g)}.L4{color:var(--b)}.L5{color:var(--o)}.L6{color:var(--p)}.L7{color:var(--c)}
+
+/* 1 açılış */
+.hero .logo{font-size:clamp(2.6rem,6vw,5rem);margin-bottom:46px;}
+.hero h1 .num{color:var(--y);text-shadow:0 0 40px rgba(255,210,63,.45);font-variant-numeric:tabular-nums;}
+.scroll-hint{position:absolute;left:50%;bottom:34px;transform:translateX(-50%);z-index:3;font-size:.75rem;letter-spacing:.24em;text-transform:uppercase;color:var(--faint);display:flex;flex-direction:column;align-items:center;gap:10px;}
+.scroll-hint::after{content:"";width:1px;height:40px;background:linear-gradient(var(--faint),transparent);animation:drop 1.8s infinite;}
+@keyframes drop{0%{transform:scaleY(0);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}51%{transform-origin:bottom}100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* 2 talep: çubuklar */
+.two{display:grid;grid-template-columns:1fr 1.15fr;gap:6vw;align-items:center;}
+.two>*{min-width:0;}
+.bars{display:flex;flex-direction:column;gap:9px;}
+.bar{position:relative;display:grid;grid-template-columns:190px 1fr 64px;align-items:center;gap:14px;font-size:.95rem;cursor:default;}
+.bar .k{color:#d4d4d8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar .t{height:16px;background:rgba(255,255,255,.05);border-radius:4px;overflow:hidden;}
+.bar .f{display:block;height:100%;width:0;background:var(--g);border-radius:0 4px 4px 0;transition:width 1.4s var(--ease);}
+.bar.ank .f{background:var(--y);}
+.bar .v{text-align:right;font-weight:700;font-variant-numeric:tabular-nums;color:var(--text);}
+.bar:hover .k{color:#fff;} .bar:hover .t{background:rgba(255,255,255,.09);}
+.legend{display:flex;gap:18px;margin-top:16px;font-size:.8rem;color:var(--muted);}
+.legend span{display:inline-flex;align-items:center;gap:7px;}
+.legend i{width:10px;height:10px;border-radius:2px;}
+.bigstat{display:flex;gap:40px;margin-top:34px;flex-wrap:wrap;}
+.bigstat div b{display:block;font-size:clamp(2.6rem,5vw,4.2rem);font-weight:900;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;}
+.bigstat div span{display:block;color:var(--muted);font-size:.92rem;margin-top:6px;max-width:220px;line-height:1.35;}
+
+/* 3 kitle */
+.aud{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:44px;}
+.au{background:var(--panel);border:1px solid var(--line);border-top:2px solid var(--ac);border-radius:18px;padding:24px 20px;backdrop-filter:blur(12px);}
+.au .n{font-size:clamp(2.2rem,3.6vw,3.2rem);font-weight:900;letter-spacing:-.03em;line-height:1;font-variant-numeric:tabular-nums;}
+.au .n small{font-size:.45em;font-weight:700;color:var(--muted);margin-left:4px;}
+.au .p{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;color:var(--ac);margin-top:12px;}
+.au .w{font-size:.92rem;color:#d4d4d8;line-height:1.45;margin-top:8px;}
+
+/* 4 hesap */
+.calc{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:40px;}
+.sc{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px 22px;backdrop-filter:blur(12px);transition:border-color .3s,transform .3s;}
+.sc.mid{border-color:rgba(255,210,63,.5);box-shadow:0 0 50px -20px rgba(255,210,63,.6);}
+.sc .t{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--muted);}
+.sc.mid .t{color:var(--y);}
+.step{display:flex;justify-content:space-between;align-items:baseline;padding:11px 0;border-bottom:1px dashed var(--line);font-size:.92rem;color:var(--muted);}
+.step b{color:var(--text);font-size:1.15rem;font-variant-numeric:tabular-nums;}
+.step.res{border:0;padding-top:16px;}
+.step.res b{font-size:2.2rem;font-weight:900;color:var(--g);letter-spacing:-.02em;}
+.sc .rev{margin-top:6px;font-size:.95rem;color:var(--muted);}
+.sc .rev b{color:var(--y);font-weight:800;font-size:1.25rem;}
+.jobval{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:30px;padding:18px 22px;border-radius:16px;background:var(--panel);border:1px solid var(--line-s);width:fit-content;}
+.jobval label{font-weight:600;}
+.jobval input[type=range]{width:240px;accent-color:var(--y);}
+.jobval output{font-weight:800;font-size:1.3rem;color:var(--y);min-width:120px;font-variant-numeric:tabular-nums;}
+.jobval small{color:var(--faint);font-size:.8rem;}
+.assume{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px;}
+.assume div{font-size:.8rem;color:var(--muted);line-height:1.45;padding:12px 14px;border-radius:12px;border:1px solid var(--line);}
+.assume b{display:block;color:var(--text);font-size:.85rem;margin-bottom:3px;}
+
+/* 5 zaman çizelgesi */
+.ramp{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:44px;position:relative;}
+.ramp::before{content:"";position:absolute;left:0;right:0;top:22px;height:2px;background:linear-gradient(90deg,var(--r),var(--y),var(--g),var(--c));opacity:.6;}
+.rm{padding:60px 18px 0 0;position:relative;}
+.rm::before{content:"";position:absolute;top:13px;left:0;width:20px;height:20px;border-radius:50%;background:var(--bg);border:2px solid var(--mc);box-shadow:0 0 16px var(--mc);}
+.rm .w{font-size:.75rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--mc);}
+.rm b{display:block;font-size:1.2rem;margin-top:6px;}
+.rm p{color:var(--muted);font-size:.9rem;line-height:1.45;margin-top:6px;}
+
+/* 6 sistem akışı */
+.flow{display:flex;align-items:stretch;gap:10px;margin-top:44px;flex-wrap:wrap;}
+.fs{flex:1;min-width:160px;background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px 18px;backdrop-filter:blur(12px);position:relative;}
+.fs .no{font-size:.72rem;font-weight:800;color:var(--fc);letter-spacing:.14em;}
+.fs b{display:block;font-size:1.08rem;margin-top:8px;}
+.fs p{font-size:.86rem;color:var(--muted);line-height:1.4;margin-top:6px;}
+.fs.me{border-color:rgba(255,210,63,.5);}
+.fs .who{position:absolute;top:14px;right:14px;font-size:.66rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:6px;background:rgba(255,210,63,.14);color:var(--y);}
+.deliver{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:22px;}
+.dl{text-align:center;padding:22px 10px;border-radius:16px;border:1px solid var(--line);}
+.dl b{display:block;font-size:2.6rem;font-weight:900;letter-spacing:-.03em;line-height:1;color:var(--dc);}
+.dl span{display:block;margin-top:8px;font-size:.86rem;color:#d4d4d8;}
+
+/* 7 panel */
+.dash{background:#0b0b10;border:1px solid var(--line-s);border-radius:22px;padding:22px;box-shadow:0 50px 100px -40px rgba(0,0,0,.9);}
+.dash .hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.dash .hd b{font-size:1rem;} .dash .hd small{color:var(--faint);font-size:.75rem;}
+.dash .live{display:inline-flex;align-items:center;gap:6px;font-size:.72rem;color:var(--g);font-weight:700;}
+.dash .live i{width:7px;height:7px;border-radius:50%;background:var(--g);box-shadow:0 0 10px var(--g);animation:bl 1.6s infinite;}
+@keyframes bl{50%{opacity:.3}}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.kpi{background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:14px;}
+.kpi small{display:block;font-size:.7rem;color:var(--muted);letter-spacing:.06em;}
+.kpi b{display:block;font-size:1.7rem;font-weight:800;margin-top:6px;font-variant-numeric:tabular-nums;}
+.kpi em{font-style:normal;font-size:.72rem;color:var(--g);}
+.spark{margin-top:14px;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:14px;padding:14px;position:relative;}
+.spark small{font-size:.72rem;color:var(--muted);}
+.spark svg{width:100%;height:120px;display:block;margin-top:6px;}
+.srcs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:10px;}
+.srcs div{font-size:.8rem;color:var(--muted);padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid var(--line);}
+.srcs b{display:block;color:var(--text);font-size:1.1rem;margin-top:3px;}
+.mock{font-size:.72rem;color:var(--faint);text-align:right;margin-top:10px;}
+.tip{position:absolute;pointer-events:none;background:#16161d;border:1px solid var(--line-s);border-radius:8px;padding:6px 10px;font-size:.78rem;opacity:0;transition:opacity .15s;white-space:nowrap;}
+
+/* 8 portföy */
+.strip{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-top:40px;}
+.strip figure{position:relative;aspect-ratio:3/4;border-radius:14px;overflow:hidden;border:1px solid var(--line);}
+.strip img,.strip video{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease);}
+.strip figure:hover img,.strip figure:hover video{transform:scale(1.07);}
+.strip figcaption{position:absolute;left:0;right:0;bottom:0;padding:28px 12px 10px;background:linear-gradient(0deg,rgba(0,0,0,.85),transparent);font-size:.78rem;font-weight:600;}
+
+/* 9 kapanış */
+.end{text-align:center;justify-content:center;}
+.end .wrap{display:flex;flex-direction:column;align-items:center;}
+.collab{display:flex;align-items:center;gap:24px;flex-wrap:wrap;justify-content:center;}
+.collab .hai{font-size:clamp(2.2rem,4.6vw,4rem);font-weight:900;letter-spacing:-.03em;}
+.collab .hai em{font-style:normal;color:var(--c);text-shadow:0 0 30px rgba(34,211,238,.5);}
+.collab .x{font-size:2rem;color:var(--faint);font-weight:300;}
+.collab .logo{font-size:clamp(2rem,4vw,3.4rem);}
+.end h2{margin-top:44px;}
+.cta{display:inline-flex;align-items:center;gap:12px;margin-top:36px;padding:16px 28px;border-radius:100px;background:var(--y);color:#111;font-weight:800;font-size:1.1rem;text-decoration:none;box-shadow:0 0 50px -10px var(--y);}
+.contact{margin-top:18px;color:var(--muted);font-size:.95rem;}
+
+
+/* ---------- TEKLİF ---------- */
+.offer-meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px;}
+.offer-meta span{font-size:.82rem;padding:8px 14px;border-radius:100px;border:1px solid var(--line-s);background:var(--panel);color:var(--muted);}
+.offer-meta b{color:var(--text);font-weight:600;}
+.prices{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px;}
+.pc{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:30px 28px;backdrop-filter:blur(12px);overflow:hidden;}
+.pc::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--pcc);box-shadow:0 0 20px var(--pcc);}
+.pc .lb{font-size:.78rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--pcc);}
+.pc .pr{font-size:clamp(2.6rem,5vw,4rem);font-weight:900;letter-spacing:-.03em;line-height:1;margin-top:12px;font-variant-numeric:tabular-nums;}
+.pc .pr small{font-size:.32em;font-weight:500;color:var(--muted);letter-spacing:0;margin-left:6px;}
+.pc .pay{font-size:.88rem;color:var(--muted);margin-top:8px;}
+.pc ul{list-style:none;margin-top:22px;display:flex;flex-direction:column;gap:10px;}
+.pc li{display:flex;gap:12px;font-size:.95rem;color:#d4d4d8;line-height:1.45;}
+.pc li::before{content:"\2713";flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:.7rem;font-weight:800;color:#111;background:var(--pcc);margin-top:2px;}
+.pc li b{color:#fff;font-weight:600;}
+.payback{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:18px;padding:22px 26px;border-radius:18px;border:1px solid rgba(43,217,124,.4);background:rgba(43,217,124,.06);}
+.payback .n{font-size:3rem;font-weight:900;color:var(--g);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;}
+.payback p{font-size:1rem;color:#d4d4d8;line-height:1.5;max-width:720px;}
+.payback p b{color:#fff;}
+.extras{width:100%;border-collapse:collapse;margin-top:16px;font-size:.95rem;}
+.extras td{padding:14px 0;border-bottom:1px solid var(--line);vertical-align:top;}
+.extras td small{display:block;color:var(--muted);font-size:.82rem;margin-top:3px;}
+.extras td.r{text-align:right;font-weight:700;white-space:nowrap;padding-left:20px;}
+.terms{list-style:none;counter-reset:t;margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px 28px;}
+.terms li{counter-increment:t;position:relative;padding-left:36px;font-size:.92rem;color:#d4d4d8;line-height:1.5;}
+.terms li::before{content:counter(t);position:absolute;left:0;top:0;width:24px;height:24px;border-radius:50%;border:1px solid var(--line-s);display:grid;place-items:center;font-size:.72rem;font-weight:700;color:var(--muted);}
+.terms li b{color:#fff;font-weight:600;}
+.h3{font-size:1.3rem;font-weight:800;margin-top:46px;display:flex;align-items:center;gap:10px;}
+.h3 i{width:9px;height:9px;border-radius:2px;transform:rotate(45deg);}
+.accept{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:36px;}
+.cta.ghost{background:transparent;color:var(--text);border:1px solid var(--line-s);box-shadow:none;}
+.valid{margin-top:16px;font-size:.9rem;color:var(--muted);}
+.valid b{color:var(--y);}
+@media(max-width:900px){.prices,.terms{grid-template-columns:1fr;}.extras td.r{white-space:normal;}}
+
+@media(max-width:900px){
+  section{padding:100px 20px 80px;min-height:auto;}
+  .hero{min-height:100vh;}
+  .two{grid-template-columns:1fr;gap:40px;}
+  .bar{grid-template-columns:130px 1fr 52px;font-size:.82rem;gap:10px;}
+  .aud,.calc,.kpis{grid-template-columns:1fr 1fr;}
+  .calc{grid-template-columns:1fr;}
+  .assume{grid-template-columns:1fr 1fr;}
+  .ramp{grid-template-columns:1fr 1fr;row-gap:24px;} .ramp::before{display:none;}
+  .deliver{grid-template-columns:repeat(3,1fr);}
+  .strip{grid-template-columns:repeat(3,1fr);}
+  .srcs{grid-template-columns:1fr;}
+  .jobval input[type=range]{width:100%;}
+  .brand .h,.brand .x{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="prog" id="prog"></div>
+<div class="topbar">
+  <div class="brand"><span class="h">Hüsrev <em>AI</em></span><span class="x">×</span><span><span class="L1">R</span><span class="L2">E</span><span class="L3">K</span><span class="L4">L</span><span class="L5">A</span><span class="L6">M</span> <span class="L7">A</span><span class="L2">D</span><span class="L3">A</span><span class="L1">S</span><span class="L4">I</span></span></div>
+  <button class="play" id="play"><i>▶</i><span>Otomatik oynat</span></button>
+</div>
+
+<!-- 1 AÇILIŞ -->
+<section class="hero">
+  <div class="bgm"><video src="../assets/rys_cephe.mp4" muted loop playsinline autoplay></video></div><div class="shade"></div>
+  <div class="wrap">
+    <div class="logo rv">
+      <div class="row"><span class="L1">R</span><span class="L2">E</span><span class="L3">K</span><span class="L4">L</span><span class="L5">A</span><span class="L6">M</span></div>
+      <div class="row"><span class="L7">A</span><span class="L2">D</span><span class="L3">A</span><span class="L1">S</span><span class="L4">I</span></div>
+    </div>
+    <h1 class="rv d1">Türkiye'de her ay<br><span class="num" data-count="21430">0</span> kez<br><span class="serif">tabela aranıyor.</span></h1>
+    <p class="lead rv d2">Bu aramaların hiçbirinde <b>Reklam Adası</b> çıkmıyor. Müşteri var, talep var. Eksik olan tek şey: sizi bulmaları.</p>
+    <p class="src rv d3">Kaynak: Google Keyword Planner, Ekim 2026. Seçilmiş 17 tabela ve maket araması, aylık ortalama.</p>
+    <div class="offer-meta rv d4"><span>Hizmet Teklifi · <b>HAI-2026-002</b></span><span>Sayın <b>Adem Bey</b> · Reklam Adası</span><span>Hazırlayan <b>Hüsrev AI</b></span><span>Tarih <b>07.10.2026</b> · Geçerlilik <b>17.10.2026</b></span></div>
+  </div>
+  <div class="scroll-hint">Kaydır</div>
+</section>
+
+<!-- 2 TALEP -->
+<section style="--k:var(--g)">
+  <div class="wrap two">
+    <div>
+      <div class="kick rv">Talep zaten var</div>
+      <h2 class="rv d1">İnsanlar sizi<br><span class="serif glow">her gün arıyor.</span></h2>
+      <p class="lead rv d2">Bunlar tahmin değil. Google'ın kendi verisi: Türkiye'de bir ayda kaç kez yazıldıkları.</p>
+      <div class="bigstat rv d3">
+        <div><b class="glow" style="--k:var(--y)" data-count="7260">0</b><span>aylık arama, sadece Ankara geçen kelimelerde</span></div>
+        <div><b data-count="714">0</b><span>günde ortalama arama (toplam)</span></div>
+      </div>
+    </div>
+    <div class="rv d2">
+      <div class="bars" id="bars"></div>
+      <div class="legend"><span><i style="background:var(--y)"></i>Ankara aramaları</span><span><i style="background:var(--g)"></i>Türkiye geneli</span></div>
+      <p class="src">Kaynak: Google Keyword Planner (Türkiye, Türkçe), Ekim 2026.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 KİTLE -->
+<section style="--k:var(--c)">
+  <div class="bgm"><img src="../assets/intercontinental.jpg" alt=""></div><div class="shade"></div>
+  <div class="wrap">
+    <div class="kick rv">Kitle nerede?</div>
+    <h2 class="rv d1">Türkiye'de milyonlarca kişi,<br><span class="serif glow">her kanalın ayrı bir görevi var.</span></h2>
+    <div class="aud">
+      <div class="au rv d1" style="--ac:var(--c)"><div class="n"><span data-count="62.3" data-dec="1">0</span><small>milyon</small></div><div class="p">Instagram</div><div class="w">Biten işleriniz vitrin olur, güven verir.</div></div>
+      <div class="au rv d2" style="--ac:var(--p)"><div class="n"><span data-count="57.9" data-dec="1">0</span><small>milyon</small></div><div class="p">YouTube</div><div class="w">Shorts videoları sizi tanımayanlara ulaştırır, siteye taşır.</div></div>
+      <div class="au rv d3" style="--ac:var(--b)"><div class="n"><span data-count="21.0" data-dec="1">0</span><small>milyon</small></div><div class="p">LinkedIn</div><div class="w">Otel, fabrika, zincir mağaza: tabelaya karar veren yöneticiler burada.</div></div>
+      <div class="au rv d4" style="--ac:var(--o)"><div class="n"><span data-count="5.91" data-dec="2">0</span><small>milyon</small></div><div class="p">Ankara nüfusu</div><div class="w">Google Haritalar'da "yakınımdaki tabelacı" diyenler.</div></div>
+    </div>
+    <p class="src rv">Kaynak: DataReportal Digital 2026 Türkiye (reklam erişimi, 2025 sonu) · TÜİK ADNKS 2025.</p>
+  </div>
+</section>
+
+<!-- 4 HESAP -->
+<section style="--k:var(--y)">
+  <div class="wrap">
+    <div class="kick rv">Gerçekçi hesap</div>
+    <h2 class="rv d1">Bu aramaların küçük bir kısmı bile<br><span class="serif glow">her ay yeni iş demek.</span></h2>
+    <div class="calc">
+      <div class="sc rv d1" data-ctr="0.03" data-cr="0.02"><div class="t">Temkinli</div>
+        <div class="step">Aylık arama<b>21.430</b></div>
+        <div class="step">Siteye gelen <small>(%3)</small><b class="vis"></b></div>
+        <div class="step">Teklif isteyen <small>(%2)</small><b class="lead-n"></b></div>
+        <div class="step res">Yeni iş / ay<b class="job"></b></div>
+        <div class="rev">Ek ciro: <b class="money"></b> / ay</div></div>
+      <div class="sc mid rv d2" data-ctr="0.05" data-cr="0.03"><div class="t">Ortalama</div>
+        <div class="step">Aylık arama<b>21.430</b></div>
+        <div class="step">Siteye gelen <small>(%5)</small><b class="vis"></b></div>
+        <div class="step">Teklif isteyen <small>(%3)</small><b class="lead-n"></b></div>
+        <div class="step res">Yeni iş / ay<b class="job"></b></div>
+        <div class="rev">Ek ciro: <b class="money"></b> / ay</div></div>
+      <div class="sc rv d3" data-ctr="0.08" data-cr="0.05"><div class="t">İyi giderse</div>
+        <div class="step">Aylık arama<b>21.430</b></div>
+        <div class="step">Siteye gelen <small>(%8)</small><b class="vis"></b></div>
+        <div class="step">Teklif isteyen <small>(%5)</small><b class="lead-n"></b></div>
+        <div class="step res">Yeni iş / ay<b class="job"></b></div>
+        <div class="rev">Ek ciro: <b class="money"></b> / ay</div></div>
+    </div>
+    <div class="jobval rv">
+      <label for="jv">Ortalama bir işinizin bedeli:</label>
+      <input type="range" id="jv" min="5000" max="150000" step="5000" value="25000">
+      <output id="jvo">25.000 TL</output>
+      <small>Kaydırarak kendi rakamınızı girin</small>
+    </div>
+    <div class="assume rv">
+      <div><b>Siteye gelme oranı</b>Google'da 1. sıra ortalama %28,5 tıklama alır. Biz tüm aramaların sadece %3-8'ini hesapladık.</div>
+      <div><b>Teklif isteme oranı</b>Sektörler arası ortalama %6,6 (Unbounce). Biz %2-5 aldık.</div>
+      <div><b>İşe dönüşme</b>Gelen 5 tekliften 1'i işe dönüşür varsaydık (%20).</div>
+      <div><b>Hesaba katılmayan</b>Instagram, YouTube, LinkedIn ve Haritalar'dan gelenler. Bunlar ek kazanç.</div>
+    </div>
+    <p class="src rv">Kaynaklar: Google tıklama oranları 2025 (Backlinko/First Page Sage derlemeleri) · Unbounce Conversion Benchmark Report 2024 (57 milyon dönüşüm).</p>
+  </div>
+</section>
+
+<!-- 5 ZAMAN -->
+<section style="--k:var(--r)">
+  <div class="wrap">
+    <div class="kick rv">Ne zaman?</div>
+    <h2 class="rv d1">Google bir günde değil,<br><span class="serif glow">aylar içinde güvenir.</span></h2>
+    <p class="lead rv d2">Dürüst olalım: arama sonuçlarında yükselmek zaman alır. Ama bir kere oturan sayfa, reklam parası istemeden yıllarca müşteri getirir.</p>
+    <div class="ramp">
+      <div class="rm rv d1" style="--mc:var(--r)"><div class="w">1. ay</div><b>Kurulum</b><p>Site, ölçüm, Haritalar kaydı, LinkedIn ve YouTube açılır. İlk içerikler yayında.</p></div>
+      <div class="rm rv d2" style="--mc:var(--y)"><div class="w">2-3. ay</div><b>İlk görünürlük</b><p>Haritalar ve Ankara ilçe sayfalarından ilk aramalar, ilk teklif talepleri.</p></div>
+      <div class="rm rv d3" style="--mc:var(--g)"><div class="w">4-6. ay</div><b>Yükseliş</b><p>Blog yazıları Google'da birikir. Temkinli senaryo seviyesine ulaşılır.</p></div>
+      <div class="rm rv d4" style="--mc:var(--c)"><div class="w">6-12. ay</div><b>Kalıcı akış</b><p>Yüzlerce sayfa ve video. Ortalama senaryo, her ay kendiliğinden.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 SİSTEM -->
+<section style="--k:var(--p)">
+  <div class="bgm"><video src="../assets/lazer_altin.mp4" muted loop playsinline preload="metadata"></video></div><div class="shade"></div>
+  <div class="wrap">
+    <div class="kick rv">Sizin tek işiniz</div>
+    <h2 class="rv d1">Fotoğrafı çekin, Telegram'a atın.<br><span class="serif glow">Gerisi sistemde.</span></h2>
+    <div class="flow">
+      <div class="fs me rv d1" style="--fc:var(--y)"><span class="who">Siz</span><div class="no">01</div><b>Çekim</b><p>Biten işin fotoğrafı ya da videosu Telegram botuna gider.</p></div>
+      <div class="fs rv d2" style="--fc:#e8a68d"><div class="no">02</div><b>Yapay zekâ yazar</b><p>Claude her platforma ayrı metin yazar, videoya marka şablonu eklenir.</p></div>
+      <div class="fs me rv d3" style="--fc:var(--y)"><span class="who">Siz + biz</span><div class="no">03</div><b>Onay</b><p>Telegram'da tek tık. İlk hafta biz, sonra birlikte.</p></div>
+      <div class="fs rv d4" style="--fc:var(--g)"><div class="no">04</div><b>Yayın</b><p>Instagram, YouTube, LinkedIn, Haritalar ve blog. Aynı anda.</p></div>
+    </div>
+    <div class="deliver">
+      <div class="dl rv d1" style="--dc:var(--p)"><b>10+</b><span>video / ay</span></div>
+      <div class="dl rv d2" style="--dc:var(--g)"><b>4</b><span>blog yazısı / ay</span></div>
+      <div class="dl rv d3" style="--dc:var(--c)"><b>5</b><span>platform</span></div>
+      <div class="dl rv d4" style="--dc:var(--y)"><b>7/24</b><span>canlı panel</span></div>
+      <div class="dl rv d4" style="--dc:var(--o)"><b>52</b><span>haftalık rapor / yıl</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 PANEL -->
+<section style="--k:var(--g)">
+  <div class="wrap two">
+    <div>
+      <div class="kick rv">Canlı panel</div>
+      <h2 class="rv d1">Kaç kişi geldi, nereden geldi,<br><span class="serif glow">her an görürsünüz.</span></h2>
+      <p class="lead rv d2">Sitenize bugün kaç kişi girdi, kaçı aradı, kaçı WhatsApp'tan yazdı. Instagram'da ve YouTube'da neredesiniz. Hepsi <b>tek ekranda</b>, telefonunuzdan. Her sabah özeti Telegram'a da düşer.</p>
+    </div>
+    <div class="rv d2">
+      <div class="dash">
+        <div class="hd"><div><b>Reklam Adası Paneli</b><br><small>Son 30 gün</small></div><span class="live"><i></i>Canlı</span></div>
+        <div class="kpis">
+          <div class="kpi"><small>Site ziyareti</small><b>1.070</b><em>▲ günde 36</em></div>
+          <div class="kpi"><small>Telefon araması</small><b>13</b><em>▲</em></div>
+          <div class="kpi"><small>WhatsApp</small><b>11</b><em>▲</em></div>
+          <div class="kpi"><small>Teklif formu</small><b>8</b><em>▲</em></div>
+        </div>
+        <div class="spark" id="spark"><small>Günlük ziyaretçi</small><svg id="sparkSvg" viewBox="0 0 600 120" preserveAspectRatio="none"></svg><div class="tip" id="tip"></div></div>
+        <div class="srcs">
+          <div>Kanal bazında<b>Google · Haritalar</b></div>
+          <div>Sosyal medya<b>Instagram · YouTube</b></div>
+          <div>Kurumsal<b>LinkedIn</b></div>
+        </div>
+        <div class="mock">Örnek görünüm · rakamlar "ortalama" senaryodan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 PORTFÖY -->
+<section style="--k:var(--o)">
+  <div class="wrap">
+    <div class="kick rv">Elinizdeki güç</div>
+    <h2 class="rv d1">Bu işleri yapan firma<br><span class="serif glow">görünmeyi hak ediyor.</span></h2>
+    <div class="strip">
+      <figure class="rv d1"><img src="../assets/intercontinental.jpg" alt=""><figcaption>InterContinental Grand Ankara</figcaption></figure>
+      <figure class="rv d1"><img src="../assets/archers.jpg" alt=""><figcaption>Archers Coffee</figcaption></figure>
+      <figure class="rv d2"><video src="../assets/mytes.mp4" muted loop playsinline preload="metadata"></video><figcaption>Mytes Mühendislik</figcaption></figure>
+      <figure class="rv d2"><img src="../assets/baytalmaqam.jpg" alt=""><figcaption>Bayt Al Maqam</figcaption></figure>
+      <figure class="rv d3"><img src="../assets/dags.jpg" alt=""><figcaption>DAGS Coffee</figcaption></figure>
+      <figure class="rv d3"><img src="../assets/castlelife.jpg" alt=""><figcaption>Castle Life</figcaption></figure>
+    </div>
+    <p class="lead rv">Tabela, kutu harf, maket, engelli erişim çözümleri, baskı, perde. Her iş kolu sitede <b>kendi sayfasına</b> sahip olur ve Google'da kendi aramasında çıkar.</p>
+  </div>
+</section>
+
+<!-- 9 TEKLİF -->
+<section id="teklif" style="--k:var(--y)">
+  <div class="wrap">
+    <div class="kick rv">Teklif · HAI-2026-002</div>
+    <h2 class="rv d1">Hepsi tek pakette.<br><span class="serif glow">İki rakam, sürpriz yok.</span></h2>
+    <div class="prices">
+      <div class="pc rv d1" style="--pcc:var(--y)">
+        <div class="lb">Kurulum · tek sefer</div>
+        <div class="pr">75.000 TL<small>+ KDV</small></div>
+        <div class="pay">Web sitesi dahil · yaklaşık 3-4 hafta</div>
+        <ul>
+          <li><span><b>Web sitesi:</b> her iş kolunuz için ayrı sayfa ve blog</span></li>
+          <li><span><b>Canlı panel:</b> ziyaretçi, arama, Instagram ve YouTube tek ekranda</span></li>
+          <li><span><b>Hesaplar:</b> Google Haritalar, LinkedIn, YouTube, Instagram</span></li>
+          <li><span><b>Telegram botu</b> ve otomatik yayın sistemi</span></li>
+        </ul>
+      </div>
+      <div class="pc rv d2" style="--pcc:var(--c)">
+        <div class="lb">Aylık hizmet</div>
+        <div class="pr">35.000 TL<small>/ ay + KDV</small></div>
+        <div class="pay">Web sitesi yayına girdiği ay başlar · en az 3 ay</div>
+        <ul>
+          <li><span><b>Ayda en az 10 video</b> (Reels / Shorts)</span></li>
+          <li><span><b>Ayda 4 blog yazısı</b> (Google için)</span></li>
+          <li><span><b>5 platformda düzenli yayın</b></span></li>
+          <li><span><b>Canlı panel</b> ve haftalık rapor</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="payback rv">
+      <div class="n" id="be">2</div>
+      <p>İşinizin ortalama bedeli <b id="beVal">25.000 TL</b> ise, ayda <b id="beN">2</b> yeni iş aylık bedeli karşılar. "Ortalama" senaryoda beklenen: <b>ayda ~6 yeni iş</b>.</p>
+    </div>
+
+    <div class="h3 rv"><i style="background:var(--muted)"></i>Şartlar</div>
+    <ul class="terms rv">
+      <li>Fiyatlara <b>KDV dahil değildir</b>; fatura istenirse eklenir.</li>
+      <li>Kurulum: <b>%50 başta, %50 site yayına girince.</b></li>
+      <li>Aylık hizmet <b>en az 3 ay</b>, her ay başında ödenir.</li>
+      <li>Teklif <b>17.10.2026</b> tarihine kadar geçerlidir.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 10 KAPANIŞ -->
+<section class="end">
+  <div class="bgm"><video src="../assets/poltek.mp4" muted loop playsinline preload="metadata"></video></div><div class="shade c"></div>
+  <div class="wrap">
+    <div class="collab rv">
+      <div class="hai">Hüsrev <em>AI</em></div><div class="x">×</div>
+      <div class="logo"><div class="row"><span class="L1">R</span><span class="L2">E</span><span class="L3">K</span><span class="L4">L</span><span class="L5">A</span><span class="L6">M</span></div><div class="row"><span class="L7">A</span><span class="L2">D</span><span class="L3">A</span><span class="L1">S</span><span class="L4">I</span></div></div>
+    </div>
+    <h2 class="rv d1">Işıkları siz yakıyorsunuz.<br><span class="serif glow">Görünürlük bizden.</span></h2>
+    <div class="accept rv d2">
+      <a class="cta" href="https://wa.me/905537058337?text=Merhaba%2C%20HAI-2026-002%20numaral%C4%B1%20teklifi%20kabul%20ediyorum.%20Ba%C5%9Flayal%C4%B1m.">&#10003; Teklifi kabul ediyorum</a>
+      <a class="cta ghost" href="https://wa.me/905537058337?text=Merhaba%2C%20HAI-2026-002%20numaral%C4%B1%20teklif%20hakk%C4%B1nda%20g%C3%B6r%C3%BC%C5%9Fmek%20istiyorum.">Görüşmek istiyorum</a>
+    </div>
+    <div class="valid rv d3">Teklif geçerlilik tarihi: <b>17.10.2026</b></div>
+    <div class="contact rv d3">Hüsrev AI · 0553 705 83 37 · @husrev.ai</div>
+  </div>
+</section>
+
+<script>
+/* arama verisi: Google Keyword Planner, TR/tr, Ekim 2026 */
+const KW=[["ankara tabela",4400,1],["ışıklı tabela",3600,0],["tabela fiyatları",2900,0],["kutu harf tabela",1900,0],["ankara reklamcı",1600,1],["pleksi harfleri",1300,0],["ışıklı tabela fiyatları",1000,0],["dükkan tabela fiyatları",880,0],["mimari maket",590,0],["ankara reklam tabela",480,1],["tabelacı ankara",390,1],["ankara branda baskı",390,1]];
+const fmt=n=>Math.round(n).toLocaleString('tr-TR');
+const bars=document.getElementById('bars');const mx=KW[0][1];
+KW.forEach(([k,v,a])=>{const d=document.createElement('div');d.className='bar'+(a?' ank':'');d.title=k+': ayda '+fmt(v)+' arama';
+  d.innerHTML=`<span class="k">${k}</span><span class="t"><span class="f" data-w="${v/mx*100}"></span></span><span class="v">${fmt(v)}</span>`;bars.appendChild(d);});
+
+/* sayaçlar */
+function countUp(el){if(el.dataset.done)return;el.dataset.done=1;const t=+el.dataset.count,dec=+(el.dataset.dec||0),s=performance.now(),D=1700;
+  (function f(n){const p=Math.min(1,(n-s)/D),e=1-Math.pow(1-p,3),v=t*e;el.textContent=dec?v.toLocaleString('tr-TR',{minimumFractionDigits:dec,maximumFractionDigits:dec}):fmt(v);if(p<1)requestAnimationFrame(f);})(s);}
+
+/* görünce aç */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(!e.isIntersecting)return;const el=e.target;el.classList.add('in');
+  el.querySelectorAll('[data-count]').forEach(countUp);if(el.hasAttribute('data-count'))countUp(el);
+  el.querySelectorAll('.f').forEach(f=>f.style.width=f.dataset.w+'%');}),{threshold:.25});
+document.querySelectorAll('.rv,[data-count]').forEach(el=>io.observe(el));
+
+/* videolar sadece görünürken oynasın */
+const vo=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){v.play().catch(()=>{});}else v.pause();}),{threshold:.1});
+document.querySelectorAll('video').forEach(v=>vo.observe(v));
+
+/* hesaplayıcı */
+const S=21430,CLOSE=.2,jv=document.getElementById('jv'),jvo=document.getElementById('jvo');
+function calc(){const val=+jv.value;jvo.textContent=fmt(val)+' TL';
+  document.querySelectorAll('.sc').forEach(c=>{const vis=S*+c.dataset.ctr,ld=vis*+c.dataset.cr,job=ld*CLOSE;
+    c.querySelector('.vis').textContent=fmt(vis)+' kişi';c.querySelector('.lead-n').textContent=fmt(ld)+' kişi';
+    c.querySelector('.job').textContent=job<10?job.toLocaleString('tr-TR',{maximumFractionDigits:1}):fmt(job);
+    c.querySelector('.money').textContent=fmt(Math.round(job)*val)+' TL';});}
+function payback(){const v=+jv.value,n=Math.ceil(35000/v);document.getElementById('be').textContent=n;document.getElementById('beN').textContent=n;document.getElementById('beVal').textContent=fmt(v)+' TL';}
+jv.addEventListener('input',()=>{calc();payback();});calc();payback();
+
+/* panel çizgisi (örnek: ortalama senaryo, 30 gün, yükselen) */
+(function(){const svg=document.getElementById('sparkSvg'),tip=document.getElementById('tip'),box=document.getElementById('spark');
+  const pts=[];let seed=7;const rnd=()=>{seed=(seed*9301+49297)%233280;return seed/233280;};
+  for(let i=0;i<30;i++){pts.push(Math.round(24+i*.55+(rnd()-.5)*10+(i%7>4?-6:0)));}
+  const W=600,H=120,max=Math.max(...pts)+6,x=i=>i/(pts.length-1)*W,y=v=>H-v/max*H;
+  const d=pts.map((v,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(v).toFixed(1)).join(' ');
+  svg.innerHTML=`<path d="${d} L${W} ${H} L0 ${H}Z" fill="rgba(43,217,124,.12)"/><path d="${d}" fill="none" stroke="#2bd97c" stroke-width="2" vector-effect="non-scaling-stroke"/><line id="xh" y1="0" y2="${H}" stroke="rgba(255,255,255,.3)" stroke-width="1" vector-effect="non-scaling-stroke" style="display:none"/>`;
+  const xh=svg.querySelector('#xh');
+  svg.addEventListener('mousemove',e=>{const r=svg.getBoundingClientRect(),i=Math.round((e.clientX-r.left)/r.width*(pts.length-1));const px=x(i);
+    xh.setAttribute('x1',px);xh.setAttribute('x2',px);xh.style.display='';tip.style.opacity=1;tip.textContent=(i+1)+'. gün · '+pts[i]+' ziyaretçi';
+    const br=box.getBoundingClientRect();tip.style.left=Math.min(e.clientX-br.left+10,br.width-150)+'px';tip.style.top='26px';});
+  svg.addEventListener('mouseleave',()=>{xh.style.display='none';tip.style.opacity=0;});})();
+
+/* ilerleme çubuğu */
+const prog=document.getElementById('prog');
+addEventListener('scroll',()=>{const h=document.documentElement;prog.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';},{passive:true});
+
+/* otomatik oynat: bölüm bölüm kaydırır (video gibi) */
+const secs=[...document.querySelectorAll('section')],play=document.getElementById('play');let auto=null;
+function stopAuto(){clearInterval(auto);auto=null;play.innerHTML='<i>▶</i><span>Otomatik oynat</span>';}
+play.addEventListener('click',()=>{if(auto){stopAuto();return;}
+  play.innerHTML='<i>❚❚</i><span>Durdur</span>';
+  const next=()=>{const y=scrollY+innerHeight*.5;const n=secs.find(s=>s.offsetTop>y);if(!n){stopAuto();return;}n.scrollIntoView({behavior:'smooth'});};
+  next();auto=setInterval(next,8000);});
+['wheel','touchstart','keydown'].forEach(ev=>addEventListener(ev,()=>{if(auto)stopAuto();},{passive:true}));
+</script>
+</body>
+</html>
